@@ -26,7 +26,7 @@ const db = firebase.firestore();
 
 export default function Home() {
   const [selectedRole, setSelectedRole] = useState(null);
-  const [showAuth, setShowAuth] = useState(false);
+  const [showAuth, setShowAuth] = useState(true); // Commence avec true pour afficher l'auth
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -55,6 +55,18 @@ export default function Home() {
       }
     }, 100);
   };
+
+  // Auto-scroll to auth section on mount
+  useEffect(() => {
+    if (showAuth) {
+      setTimeout(() => {
+        const authSection = document.getElementById('auth-section');
+        if (authSection) {
+          authSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, [showAuth]);
 
   // Select role
   const selectRole = (role) => {
