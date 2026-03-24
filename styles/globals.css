@@ -75,6 +75,37 @@ body {
   justify-content: flex-end;
 }
 
+.dashboard-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  flex: 0 0 auto;
+  width: 250px;
+}
+
+.dashboard-search-bar i {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.dashboard-search-bar input {
+  border: none;
+  background: none;
+  flex: 1;
+  font-size: 0.9rem;
+  color: white;
+  outline: none;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.dashboard-search-bar input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
 .settings-btn {
   background: rgba(255, 148, 8, 0.2);
   border: 2px solid rgba(255, 148, 8, 0.5);
@@ -311,54 +342,19 @@ body {
   box-shadow: 0 8px 25px rgba(255, 148, 8, 0.5);
 }
 
-/* Floating Bottom Bar */
+/* DEPRECATED: Floating Bottom Bar - removed, search moved to header */
 .floating-bottom-bar {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  height: 60px;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  z-index: 840;
-  gap: 15px;
+  display: none;
 }
 
 .search-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  background: #f5f7fa;
-  border-radius: 25px;
-}
-
-.search-container i {
-  color: #1F386E;
-  font-size: 1rem;
-}
-
-.search-container input {
-  border: none;
-  background: none;
-  flex: 1;
-  font-size: 0.9rem;
-  color: #1F386E;
-  outline: none;
-  font-family: 'Montserrat', sans-serif;
-}
-
-.search-container input::placeholder {
-  color: #999;
+  display: none;
 }
 
 .profile-bubble {
+  position: fixed;
+  bottom: 160px;
+  right: 30px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -371,6 +367,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 850;
 }
 
 .profile-bubble:hover {

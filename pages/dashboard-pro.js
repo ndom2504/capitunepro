@@ -100,6 +100,12 @@ export default function DashboardPro() {
             <div className="dashboard-header-left">
               <img src="/asset/icon.svg" alt="Capitune Pro" title="Accueil" />
             </div>
+            
+            <div className="dashboard-search-bar">
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="Rechercher..." />
+            </div>
+            
             <div className="dashboard-header-center">
               <h1>{TAB_TITLES[activeTab]}</h1>
             </div>
@@ -372,16 +378,10 @@ export default function DashboardPro() {
           <i className="fas fa-comments"></i>
         </button>
 
-        {/* Floating Bottom Bar */}
-        <div className="floating-bottom-bar">
-          <div className="search-container">
-            <i className="fas fa-search"></i>
-            <input type="text" placeholder="Rechercher..." />
-          </div>
-          <button className="profile-bubble" title="Profil">
-            <i className="fas fa-user-circle"></i>
-          </button>
-        </div>
+        {/* Floating Profile Bubble */}
+        <button className="profile-bubble" title="Profil" onClick={handleSettings}>
+          <i className="fas fa-user-circle"></i>
+        </button>
       </div>
 
       <style jsx>{`
