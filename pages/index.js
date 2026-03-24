@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import firebase from 'firebase/compat/app';
@@ -31,7 +31,20 @@ export default function Home() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const authLockRef = useRef(false);
   const router = useRouter();
+
+  const beginAuthAction = () => {
+    if (authLockRef.current) return false;
+    authLockRef.current = true;
+    setIsLoading(true);
+    return true;
+  };
+
+  const endAuthAction = () => {
+    authLockRef.current = false;
+    setIsLoading(false);
+  };
 
   // Check authentication state
   useEffect(() => {
@@ -94,15 +107,15 @@ export default function Home() {
 
   // Sign in with Google
   const signInWithGoogle = async () => {
-    if (isLoading) return;
+    if (!beginAuthAction()) return;
     
     if (!selectedRole) {
+      endAuthAction();
       setError('Veuillez d\'abord sélectionner un profil');
       return;
     }
     
     try {
-      setIsLoading(true);
       const provider = new firebase.auth.GoogleAuthProvider();
       const result = await auth.signInWithPopup(provider);
       
@@ -127,21 +140,21 @@ export default function Home() {
       }
       setError('Erreur de connexion avec Google: ' + error.message);
     } finally {
-      setIsLoading(false);
+      endAuthAction();
     }
   };
 
   // Sign in with Microsoft
   const signInWithMicrosoft = async () => {
-    if (isLoading) return;
+    if (!beginAuthAction()) return;
     
     if (!selectedRole) {
+      endAuthAction();
       setError('Veuillez d\'abord sélectionner un profil');
       return;
     }
     
     try {
-      setIsLoading(true);
       const provider = new firebase.auth.OAuthProvider('microsoft.com');
       const result = await auth.signInWithPopup(provider);
       
@@ -166,7 +179,7 @@ export default function Home() {
       }
       setError('Erreur de connexion avec Microsoft: ' + error.message);
     } finally {
-      setIsLoading(false);
+      endAuthAction();
     }
   };
 
@@ -203,7 +216,7 @@ export default function Home() {
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
     setError('');
 
     if (!selectedRole) {
@@ -221,10 +234,9 @@ export default function Home() {
       return;
     }
 
-    if (isLoading) return;
+    if (!beginAuthAction()) return;
     
     try {
-      setIsLoading(true);
       const result = await auth.signInWithEmailAndPassword(email, password);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
@@ -237,7 +249,7 @@ export default function Home() {
         setError('Erreur de connexion: ' + error.message);
       }
     } finally {
-      setIsLoading(false);
+      endAuthAction();
     }
   };
 
@@ -260,29 +272,31 @@ export default function Home() {
       return;
     }
 
-    if (isLoading) return;
+    if (!beginAuthAction()) return;
     
     try {
-      setIsLoading(true);
       const result = await auth.createUserWithEmailAndPassword(email, password);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error creating account:', error);
       if (error.code === 'auth/email-already-in-use') {
-        // 🔥 Auto login si le compte existe déjà
+        // Auto-login si le compte existe déjà
         try {
-          setIsLoading(false); // Reset loading state before retry
           const loginResult = await auth.signInWithEmailAndPassword(email, password);
           await handleSuccessfulAuth(loginResult.user);
         } catch (loginError) {
           console.error('Error auto-login:', loginError);
-          setError('Compte existant, mot de passe incorrect');
+          if (loginError.code === 'auth/wrong-password') {
+            setError('Mot de passe incorrect.');
+          } else {
+            setError('Erreur de connexion: ' + loginError.message);
+          }
         }
       } else {
         setError('Erreur de création de compte: ' + error.message);
       }
     } finally {
-      setIsLoading(false);
+      endAuthAction();
     }
   };
 
@@ -441,7 +455,8 @@ export default function Home() {
                     
                     {error && <div className="error">{error}</div>}
                     
-                    <form onSubmit={handleSubmit}>
+                    {/* Email/Password Login */}
+                    <div>
                       <div className="form-group">
                         <label>Email:</label>
                         <input 
@@ -464,7 +479,13 @@ export default function Home() {
                           required 
                         />
                       </div>
-                      <button type="submit" className="btn-block" style={{ background: '#1F386E', cursor: isLoading ? 'not-allowed' : 'pointer' }} disabled={isLoading}>
+                      <button 
+                        type="button" 
+                        className="btn-block" 
+                        style={{ background: '#1F386E', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
+                        disabled={isLoading}
+                        onClick={handleSubmit}
+                      >
                         {isLoading ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
@@ -475,24 +496,20 @@ export default function Home() {
                           </>
                         )}
                       </button>
-                    </form>
+                    </div>
                     
                     <div style={{ textAlign: 'center', margin: '30px 0' }}>
                       <p>OU</p>
                     </div>
                     
-                    {/* Google Button - Isolated Container */}
-                    <div className="text-center" style={{ marginBottom: '15px' }}>
+                    {/* Google Login */}
+                    <div style={{ marginBottom: '15px' }}>
                       <button 
                         type="button" 
                         className="btn-block" 
                         style={{ background: '#db4437', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          signInWithGoogle();
-                        }}
                         disabled={isLoading}
+                        onClick={signInWithGoogle}
                       >
                         {isLoading ? (
                           <>
@@ -506,18 +523,14 @@ export default function Home() {
                       </button>
                     </div>
                     
-                    {/* Microsoft Button - Isolated Container */}
-                    <div className="text-center" style={{ marginBottom: '15px' }}>
+                    {/* Microsoft Login */}
+                    <div style={{ marginBottom: '15px' }}>
                       <button 
                         type="button" 
                         className="btn-block" 
                         style={{ background: '#0078d4', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          signInWithMicrosoft();
-                        }}
                         disabled={isLoading}
+                        onClick={signInWithMicrosoft}
                       >
                         {isLoading ? (
                           <>
@@ -531,18 +544,14 @@ export default function Home() {
                       </button>
                     </div>
                     
-                    {/* Signup Button - Isolated Container */}
+                    {/* Signup */}
                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
                       <button 
                         type="button" 
                         className="btn" 
                         style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleSignup();
-                        }}
                         disabled={isLoading}
+                        onClick={handleSignup}
                       >
                         {isLoading ? (
                           <>
