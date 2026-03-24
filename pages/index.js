@@ -35,9 +35,26 @@ export default function Home() {
 
   // Check authentication state
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         console.log('User is signed in:', user.email);
+        
+        // Récupérer le rôle depuis Firestore
+        const doc = await db.collection('users').doc(user.uid).get();
+        
+        if (doc.exists) {
+          const role = doc.data().role;
+          console.log('User role from Firestore:', role);
+          
+          // Rediriger selon le rôle récupéré
+          if (role === 'client') {
+            console.log('Redirecting to dashboard-client');
+            router.push('/dashboard-client');
+          } else if (role === 'professional') {
+            console.log('Redirecting to dashboard-pro');
+            router.push('/dashboard-pro');
+          }
+        }
       } else {
         console.log('User is signed out');
       }
@@ -128,30 +145,27 @@ export default function Home() {
   // Handle successful authentication
   const handleSuccessfulAuth = async (user) => {
     try {
-      // Save user role in Firestore
-      await db.collection('users').doc(user.uid).set({
-        email: user.email,
-        role: selectedRole,
-        createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
-        lastLogin: firebase.firestore.Timestamp.fromDate(new Date())
-      }, { merge: true });
+      // Sauvegarder le rôle dans Firestore seulement si sélectionné
+      if (selectedRole) {
+        await db.collection('users').doc(user.uid).set({
+          email: user.email,
+          role: selectedRole,
+          createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+          lastLogin: firebase.firestore.Timestamp.fromDate(new Date())
+        }, { merge: true });
+      }
 
-      // Redirect to appropriate dashboard
-      console.log('Redirecting to dashboard for role:', selectedRole);
+      // Rediriger selon le rôle (priorité à selectedRole, fallback Firestore)
+      const role = selectedRole || 'client'; // par défaut
       
-      // Get user role from Firestore for reliable redirection
-      const userDoc = await db.collection('users').doc(user.uid).get();
-      if (userDoc.exists) {
-        const role = userDoc.data().role;
-        console.log('User role from Firestore:', role);
-        
-        if (role === 'client') {
-          console.log('Redirecting to dashboard-client');
-          router.push('/dashboard-client');
-        } else if (role === 'professional') {
-          console.log('Redirecting to dashboard-pro');
-          router.push('/dashboard-pro');
-        }
+      console.log('Redirecting to dashboard for role:', role);
+      
+      if (role === 'client') {
+        console.log('Redirecting to dashboard-client');
+        router.push('/dashboard-client');
+      } else if (role === 'professional') {
+        console.log('Redirecting to dashboard-pro');
+        router.push('/dashboard-pro');
       }
     } catch (error) {
       console.error('Error saving user data:', error);
@@ -205,6 +219,8 @@ export default function Home() {
         try {
           setIsLoading(false); // Reset loading state before retry
           const loginResult = await auth.signInWithEmailAndPassword(email, password);
+          // Utiliser selectedRole pour la redirection
+          setSelectedRole(selectedRole);
           await handleSuccessfulAuth(loginResult.user);
         } catch (loginError) {
           console.error('Error auto-login:', loginError);
