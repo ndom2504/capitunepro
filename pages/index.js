@@ -177,6 +177,36 @@ export default function Home() {
           <div className="row">
             <div className="col-lg-4 col-md-6 mb-4">
               <div className="service-card">
+                <i className="fas fa-users service-icon"></i>
+                <h3>Communauté (Inside)</h3>
+                <p>Partage d'expériences entre utilisateurs<br/>
+                Questions / réponses<br/>
+                Accès à des conseils pratiques</p>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="service-card">
+                <i className="fas fa-robot service-icon"></i>
+                <h3>Assistant intelligent (IA)</h3>
+                <p>Orientation sur les options possibles<br/>
+                Réponses rapides à vos questions<br/>
+                Aide à la compréhension des démarches<br/>
+                Recommandations personnalisées (selon profil)</p>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="service-card">
+                <i className="fas fa-route service-icon"></i>
+                <h3>Parcours guidé (mode autonome)</h3>
+                <p>Orientation sans professionnel<br/>
+                Suggestions adaptées à votre profil<br/>
+                Aide à la structuration du projet</p>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="service-card">
                 <i className="fas fa-tasks service-icon"></i>
                 <h3>Gestion de projet Canada</h3>
                 <p>Création et suivi de votre projet (études, travail, résidence, etc.)<br/>
@@ -201,26 +231,7 @@ export default function Home() {
                 <p>Accès à des consultants et experts certifiés<br/>
                 Consultation de profils vérifiés<br/>
                 Choix du professionnel selon votre projet<br/>
-                Demande d’accompagnement personnalisé</p>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="service-card">
-                <i className="fas fa-robot service-icon"></i>
-                <h3>Assistant intelligent (IA)</h3>
-                <p>Orientation sur les options possibles<br/>
-                Réponses rapides à vos questions<br/>
-                Aide à la compréhension des démarches<br/>
-                Recommandations personnalisées (selon profil)</p>
-              </div>
-            </div>
-            <div className="col-lg-4 col-md-6 mb-4">
-              <div className="service-card">
-                <i className="fas fa-route service-icon"></i>
-                <h3>Parcours guidé (mode autonome)</h3>
-                <p>Orientation sans professionnel<br/>
-                Suggestions adaptées à votre profil<br/>
-                Aide à la structuration du projet</p>
+                Demande d'accompagnement personnalisé</p>
               </div>
             </div>
           </div>
