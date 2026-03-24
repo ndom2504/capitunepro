@@ -113,11 +113,12 @@ export default function Home() {
       await db.collection('users').doc(user.uid).set({
         email: user.email,
         role: selectedRole,
-        createdAt: new Date(),
-        lastLogin: new Date()
+        createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+        lastLogin: firebase.firestore.Timestamp.fromDate(new Date())
       }, { merge: true });
 
       // Redirect to appropriate dashboard
+      console.log('Redirecting to dashboard for role:', selectedRole);
       if (selectedRole === 'client') {
         router.push('/dashboard-client');
       } else if (selectedRole === 'professional') {
@@ -343,7 +344,7 @@ export default function Home() {
                     </div>
                     
                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                      <p>Pas encore de compte? <a href="#" onClick={() => alert('Inscription à venir')} style={{ color: '#1F386E' }}>S'inscrire</a></p>
+                      <p>Pas encore de compte? <a href="#" onClick={() => alert('Fonctionnalité d\'inscription bientôt disponible !')} style={{ color: '#1F386E' }}>S'inscrire</a></p>
                       <button onClick={() => setSelectedRole(null)} className="btn" style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E' }}>Retour</button>
                     </div>
                   </div>
