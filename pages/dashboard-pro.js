@@ -84,9 +84,11 @@ export default function DashboardPro() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        console.log('Professional user signed in:', user.email);
         setUser(user);
         loadProfessionalData(user.uid);
       } else {
+        console.log('User is signed out, redirecting to home');
         router.push('/');
       }
       setLoading(false);

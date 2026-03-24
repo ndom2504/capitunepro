@@ -119,10 +119,20 @@ export default function Home() {
 
       // Redirect to appropriate dashboard
       console.log('Redirecting to dashboard for role:', selectedRole);
-      if (selectedRole === 'client') {
-        router.push('/dashboard-client');
-      } else if (selectedRole === 'professional') {
-        router.push('/dashboard-pro');
+      
+      // Get user role from Firestore for reliable redirection
+      const userDoc = await db.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        const role = userDoc.data().role;
+        console.log('User role from Firestore:', role);
+        
+        if (role === 'client') {
+          console.log('Redirecting to dashboard-client');
+          router.push('/dashboard-client');
+        } else if (role === 'professional') {
+          console.log('Redirecting to dashboard-pro');
+          router.push('/dashboard-pro');
+        }
       }
     } catch (error) {
       console.error('Error saving user data:', error);
@@ -146,6 +156,24 @@ export default function Home() {
     } catch (error) {
       console.error('Error signing in:', error);
       setError('Erreur de connexion: ' + error.message);
+    }
+  };
+
+  // Handle signup
+  const handleSignup = async () => {
+    setError('');
+    
+    if (!selectedRole) {
+      setError('Veuillez d\'abord sélectionner un profil');
+      return;
+    }
+
+    try {
+      const result = await auth.createUserWithEmailAndPassword(email, password);
+      await handleSuccessfulAuth(result.user);
+    } catch (error) {
+      console.error('Error creating account:', error);
+      setError('Erreur de création de compte: ' + error.message);
     }
   };
 
@@ -344,7 +372,9 @@ export default function Home() {
                     </div>
                     
                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                      <p>Pas encore de compte? <a href="#" onClick={() => alert('Fonctionnalité d\'inscription bientôt disponible !')} style={{ color: '#1F386E' }}>S'inscrire</a></p>
+                      <button onClick={handleSignup} className="btn" style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: 'pointer' }}>
+                        Créer un compte
+                      </button>
                       <button onClick={() => setSelectedRole(null)} className="btn" style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E' }}>Retour</button>
                     </div>
                   </div>

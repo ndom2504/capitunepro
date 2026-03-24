@@ -50,9 +50,11 @@ export default function DashboardClient() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        console.log('User is signed in:', user.email);
         setUser(user);
         loadUserProjects(user.uid);
       } else {
+        console.log('User is signed out, redirecting to home');
         router.push('/');
       }
       setLoading(false);
