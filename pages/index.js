@@ -173,7 +173,11 @@ export default function Home() {
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error creating account:', error);
-      setError('Erreur de création de compte: ' + error.message);
+      if (error.code === 'auth/email-already-in-use') {
+        setError('Cet email est déjà utilisé. Veuillez vous connecter ou utiliser un autre email.');
+      } else {
+        setError('Erreur de création de compte: ' + error.message);
+      }
     }
   };
 
