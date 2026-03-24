@@ -65,17 +65,19 @@ body {
   font-weight: 500;
   transition: all 0.3s ease;
   position: relative;
-  padding: 8px 0;
+  padding: 8px 16px;
   border: 2px solid transparent;
   border-radius: 8px;
+  background: transparent;
 }
 
 .nav-links a:hover {
   color: #ffffff;
   text-decoration: none;
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .hero {
@@ -88,18 +90,6 @@ body {
   overflow: hidden;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></svg>') center/100px 100px;
-  animation: float 20s infinite linear;
-  z-index: 1;
-}
-
 .hero::after {
   content: '';
   position: absolute;
@@ -110,6 +100,18 @@ body {
   background: url('/asset/videoinside.mp4') center/cover no-repeat;
   opacity: 0.3;
   z-index: 0;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></svg>') center/100px 100px;
+  animation: float 20s infinite linear;
+  z-index: 1;
 }
 
 @keyframes float {
