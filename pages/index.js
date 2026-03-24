@@ -30,6 +30,7 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   // Check authentication state
@@ -80,13 +81,22 @@ export default function Home() {
       setError('Veuillez d\'abord sélectionner un profil');
       return;
     }
+    
+    if (isLoading) return;
+    
     try {
+      setIsLoading(true);
       const provider = new firebase.auth.GoogleAuthProvider();
       const result = await auth.signInWithPopup(provider);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in with Google:', error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        return; // Ignorer si l'utilisateur ferme la popup
+      }
       setError('Erreur de connexion avec Google: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -96,13 +106,22 @@ export default function Home() {
       setError('Veuillez d\'abord sélectionner un profil');
       return;
     }
+    
+    if (isLoading) return;
+    
     try {
+      setIsLoading(true);
       const provider = new firebase.auth.OAuthProvider('microsoft.com');
       const result = await auth.signInWithPopup(provider);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in with Microsoft:', error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        return; // Ignorer si l'utilisateur ferme la popup
+      }
       setError('Erreur de connexion avec Microsoft: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -150,12 +169,17 @@ export default function Home() {
       return;
     }
 
+    if (isLoading) return;
+    
     try {
+      setIsLoading(true);
       const result = await auth.signInWithEmailAndPassword(email, password);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in:', error);
       setError('Erreur de connexion: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -168,7 +192,10 @@ export default function Home() {
       return;
     }
 
+    if (isLoading) return;
+    
     try {
+      setIsLoading(true);
       const result = await auth.createUserWithEmailAndPassword(email, password);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
@@ -178,6 +205,8 @@ export default function Home() {
       } else {
         setError('Erreur de création de compte: ' + error.message);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -359,7 +388,17 @@ export default function Home() {
                           required 
                         />
                       </div>
-                      <button type="submit" className="btn-block">Se connecter</button>
+                      <button type="submit" className="btn-block" style={{ background: '#1F386E', cursor: isLoading ? 'not-allowed' : 'pointer' }} disabled={isLoading}>
+                        {isLoading ? (
+                          <>
+                            <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
+                          </>
+                        ) : (
+                          <>
+                            Se connecter
+                          </>
+                        )}
+                      </button>
                     </form>
                     
                     <div style={{ textAlign: 'center', margin: '30px 0' }}>
@@ -367,17 +406,41 @@ export default function Home() {
                     </div>
                     
                     <div className="text-center">
-                      <button type="button" className="btn-block mb-2" style={{ background: '#db4437' }} onClick={signInWithGoogle}>
-                        <i className="fab fa-google"></i> Connexion avec Google
+                      <button type="button" className="btn-block mb-2" style={{ background: '#db4437', cursor: isLoading ? 'not-allowed' : 'pointer' }} onClick={signInWithGoogle} disabled={isLoading}>
+                        {isLoading ? (
+                          <>
+                            <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fab fa-google"></i> Connexion avec Google
+                          </>
+                        )}
                       </button>
-                      <button type="button" className="btn-block" style={{ background: '#0078d4' }} onClick={signInWithMicrosoft}>
-                        <i className="fab fa-microsoft"></i> Connexion avec Microsoft
+                      <button type="button" className="btn-block" style={{ background: '#0078d4', cursor: isLoading ? 'not-allowed' : 'pointer' }} onClick={signInWithMicrosoft} disabled={isLoading}>
+                        {isLoading ? (
+                          <>
+                            <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fab fa-microsoft"></i> Connexion avec Microsoft
+                          </>
+                        )}
                       </button>
                     </div>
                     
                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                      <button onClick={handleSignup} className="btn" style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: 'pointer' }}>
-                        Créer un compte
+                      <button onClick={handleSignup} className="btn" style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer' }} disabled={isLoading}>
+                        {isLoading ? (
+                          <>
+                            <i className="fas fa-spinner fa-spin"></i> Création en cours...
+                          </>
+                        ) : (
+                          <>
+                            Créer un compte
+                          </>
+                        )}
                       </button>
                       <button onClick={() => setSelectedRole(null)} className="btn" style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E' }}>Retour</button>
                     </div>
