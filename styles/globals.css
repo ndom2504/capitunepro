@@ -234,8 +234,8 @@ body {
 
 /* Inside button options menu */
 .inside-options {
-  position: absolute;
-  bottom: 100%;
+  position: fixed;
+  bottom: 150px;
   left: 50%;
   transform: translateX(-50%);
   background: white;
@@ -250,7 +250,7 @@ body {
   min-width: 140px;
 }
 
-.nav-bubble.inside-btn.show-options ~ .inside-options {
+.inside-options.show {
   opacity: 1;
   visibility: visible;
 }
@@ -283,6 +283,100 @@ body {
 .inside-options button i {
   margin-right: 8px;
   color: #ff9408;
+}
+
+/* Floating Chat Bubble */
+.floating-chat-btn {
+  position: fixed;
+  bottom: 160px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 148, 8, 0.3);
+  transition: all 0.3s ease;
+  z-index: 850;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-chat-btn:hover {
+  transform: translateY(-5px) scale(1.1);
+  box-shadow: 0 8px 25px rgba(255, 148, 8, 0.5);
+}
+
+/* Floating Bottom Bar */
+.floating-bottom-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  height: 60px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 840;
+  gap: 15px;
+}
+
+.search-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f5f7fa;
+  border-radius: 25px;
+}
+
+.search-container i {
+  color: #1F386E;
+  font-size: 1rem;
+}
+
+.search-container input {
+  border: none;
+  background: none;
+  flex: 1;
+  font-size: 0.9rem;
+  color: #1F386E;
+  outline: none;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.search-container input::placeholder {
+  color: #999;
+}
+
+.profile-bubble {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1F386E 0%, #2a4a8a 100%);
+  border: 2px solid rgba(255, 148, 8, 0.3);
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-bubble:hover {
+  border-color: rgba(255, 148, 8, 1);
+  box-shadow: 0 0 20px rgba(255, 148, 8, 0.3);
+  transform: scale(1.05);
 }
 
 @keyframes bubble-pulse {

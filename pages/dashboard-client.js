@@ -22,10 +22,19 @@ if (!firebase.apps.length) {
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+const TAB_TITLES = {
+  'projets': 'Mes Projets',
+  'documents': 'Mes Documents',
+  'inside': 'Communauté Inside',
+  'messagerie': 'Messagerie',
+  'profil': 'Mon Profil'
+};
+
 export default function DashboardClient() {
   const [activeTab, setActiveTab] = useState('projets');
   const [user, setUser] = useState(null);
   const [showInsideOptions, setShowInsideOptions] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -71,7 +80,7 @@ export default function DashboardClient() {
               <img src="/asset/icon.svg" alt="Capitune Pro" title="Accueil" />
             </div>
             <div className="dashboard-header-center">
-              <h1>Capitune Pro</h1>
+              <h1>{TAB_TITLES[activeTab]}</h1>
             </div>
             <div className="dashboard-header-right">
               <button className="settings-btn" onClick={handleSettings} title="Paramètres">
@@ -296,7 +305,7 @@ export default function DashboardClient() {
             <span>Créer</span>
           </button>
 
-          <div className="inside-options" style={{ display: showInsideOptions ? 'block' : 'none' }}>
+          <div className={`inside-options ${showInsideOptions ? 'show' : ''}`}>
             <button onClick={() => { setActiveTab('inside'); setShowInsideOptions(false); }}>
               <i className="fas fa-users"></i> Inside
             </button>
@@ -323,6 +332,22 @@ export default function DashboardClient() {
             <span>Profil</span>
           </button>
         </nav>
+
+        {/* Floating Chat Bubble */}
+        <button className="floating-chat-btn" title="Chat">
+          <i className="fas fa-comments"></i>
+        </button>
+
+        {/* Bottom Search Bar and Profile Bubble */}
+        <div className="floating-bottom-bar">
+          <div className="search-container">
+            <i className="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher..." />
+          </div>
+          <button className="profile-bubble" title="Profil">
+            <i className="fas fa-user-circle"></i>
+          </button>
+        </div>
       </div>
 
       <style jsx>{`
