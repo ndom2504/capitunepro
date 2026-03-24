@@ -76,25 +76,33 @@ export default function Home() {
 
   // Sign in with Google
   const signInWithGoogle = async () => {
+    if (!selectedRole) {
+      setError('Veuillez d\'abord sélectionner un profil');
+      return;
+    }
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
       const result = await auth.signInWithPopup(provider);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in with Google:', error);
-      setError('Erreur de connexion avec Google');
+      setError('Erreur de connexion avec Google: ' + error.message);
     }
   };
 
   // Sign in with Microsoft
   const signInWithMicrosoft = async () => {
+    if (!selectedRole) {
+      setError('Veuillez d\'abord sélectionner un profil');
+      return;
+    }
     try {
       const provider = new firebase.auth.OAuthProvider('microsoft.com');
       const result = await auth.signInWithPopup(provider);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in with Microsoft:', error);
-      setError('Erreur de connexion avec Microsoft');
+      setError('Erreur de connexion avec Microsoft: ' + error.message);
     }
   };
 
@@ -125,6 +133,11 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!selectedRole) {
+      setError('Veuillez d\'abord sélectionner un profil');
+      return;
+    }
 
     try {
       const result = await auth.signInWithEmailAndPassword(email, password);
