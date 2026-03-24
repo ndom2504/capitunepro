@@ -152,10 +152,9 @@ export default function Home() {
           <div className="row">
             <div className="col-lg-12">
               <div className="hero-content">
-                <h1>Bienvenue chez Capitune Pro</h1>
-                <p>Votre partenaire de confiance pour l'immigration au Canada</p>
-                <p>Permis d'études, permis de travail, résidence permanente - Nous vous accompagnons à chaque étape</p>
-                <button onClick={showAuthSection} className="btn-primary">Commencer votre voyage</button>
+                <h1>Votre projet Canada, simplifié et accompagné</h1>
+                <p>Capitune est une plateforme de suivi et d’accompagnement qui vous connecte à des professionnels agréés et vous guide à chaque étape de votre parcours vers le Canada.</p>
+                <button onClick={showAuthSection} className="btn-primary">Commencer mon projet</button>
               </div>
             </div>
           </div>
@@ -173,23 +172,41 @@ export default function Home() {
           <div className="row">
             <div className="col-lg-4 col-md-6 mb-4">
               <div className="service-card">
-                <i className="fas fa-graduation-cap service-icon"></i>
-                <h3>Permis d'Études</h3>
-                <p>Étudiez au Canada avec notre accompagnement complet pour les permis d'études et les inscriptions universitaires.</p>
+                <i className="fas fa-tasks service-icon"></i>
+                <h3>Gestion de projet Canada</h3>
+                <p>Création et suivi de votre projet (études, travail, résidence, etc.)<br/>
+                Visualisation des étapes à accomplir<br/>
+                Suivi de progression en temps réel</p>
               </div>
             </div>
             <div className="col-lg-4 col-md-6 mb-4">
               <div className="service-card">
-                <i className="fas fa-briefcase service-icon"></i>
-                <h3>Permis de Travail</h3>
-                <p>Opportunités professionnelles au Canada avec soutien pour les permis de travail et l'immigration économique.</p>
+                <i className="fas fa-folder-shield service-icon"></i>
+                <h3>Gestion documentaire sécurisée</h3>
+                <p>Téléversement et organisation des documents<br/>
+                Suivi des documents requis<br/>
+                Statut des documents (validé, à corriger, manquant)<br/>
+                Accès centralisé à tous vos fichiers</p>
               </div>
             </div>
             <div className="col-lg-4 col-md-6 mb-4">
               <div className="service-card">
-                <i className="fas fa-home service-icon"></i>
-                <h3>Résidence Permanente</h3>
-                <p>Devenez résident permanent du Canada grâce à notre expertise des différents programmes d'immigration.</p>
+                <i className="fas fa-user-tie service-icon"></i>
+                <h3>Professionnels agréés</h3>
+                <p>Accès à des consultants et experts certifiés<br/>
+                Consultation de profils vérifiés<br/>
+                Choix du professionnel selon votre projet<br/>
+                Demande d’accompagnement personnalisé</p>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="service-card">
+                <i className="fas fa-users service-icon"></i>
+                <h3>Communauté (Inside)</h3>
+                <p>Partage d’expériences entre utilisateurs<br/>
+                Questions / réponses<br/>
+                Accès à des conseils pratiques<br/>
+                Interaction avec des professionnels</p>
               </div>
             </div>
           </div>
@@ -213,15 +230,15 @@ export default function Home() {
                 <div className="col-lg-6">
                   <div className="role-card" onClick={() => selectRole('client')}>
                     <i className="fas fa-user service-icon"></i>
-                    <h3>Client</h3>
-                    <p>Je cherche des services d'immigration</p>
+                    <h3>Candidat</h3>
+                    <p>Je souhaite concrétiser mon projet de vie au Canada</p>
                   </div>
                 </div>
                 <div className="col-lg-6">
                   <div className="role-card" onClick={() => selectRole('professional')}>
                     <i className="fas fa-user-tie service-icon"></i>
-                    <h3>Professionnel</h3>
-                    <p>Je suis un consultant en immigration</p>
+                    <h3>Professionnel agréé</h3>
+                    <p>Je suis consultant et je veux accompagner des candidats</p>
                   </div>
                 </div>
               </div>
