@@ -1,12 +1,6 @@
 {
   "version": 2,
   "name": "capitune-pro",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
     {
       "src": "/",
@@ -23,6 +17,10 @@
     {
       "src": "/templatemo_468_onetel/(.*)",
       "dest": "/templatemo_468_onetel/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ],
   "env": {
