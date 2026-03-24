@@ -201,7 +201,15 @@ export default function Home() {
     } catch (error) {
       console.error('Error creating account:', error);
       if (error.code === 'auth/email-already-in-use') {
-        setError('Cet email est déjà utilisé. Veuillez vous connecter ou utiliser un autre email.');
+        // 🔥 Auto login si le compte existe déjà
+        try {
+          setIsLoading(false); // Reset loading state before retry
+          const loginResult = await auth.signInWithEmailAndPassword(email, password);
+          await handleSuccessfulAuth(loginResult.user);
+        } catch (loginError) {
+          console.error('Error auto-login:', loginError);
+          setError('Compte existant, mot de passe incorrect');
+        }
       } else {
         setError('Erreur de création de compte: ' + error.message);
       }
