@@ -507,7 +507,7 @@ export default function Home() {
                     </div>
                     
                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                      <button onClick={handleSignup} className="btn" style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer' }} disabled={isLoading}>
+                      <button type="button" onClick={handleSignup} className="btn" style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer' }} disabled={isLoading}>
                         {isLoading ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Création en cours...
