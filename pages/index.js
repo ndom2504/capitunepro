@@ -481,8 +481,19 @@ export default function Home() {
                       <p>OU</p>
                     </div>
                     
-                    <div className="text-center">
-                      <button type="button" className="btn-block mb-2" style={{ background: '#db4437', cursor: isLoading ? 'not-allowed' : 'pointer' }} onClick={signInWithGoogle} disabled={isLoading}>
+                    {/* Google Button - Isolated Container */}
+                    <div className="text-center" style={{ marginBottom: '15px' }}>
+                      <button 
+                        type="button" 
+                        className="btn-block" 
+                        style={{ background: '#db4437', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          signInWithGoogle();
+                        }}
+                        disabled={isLoading}
+                      >
                         {isLoading ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
@@ -493,7 +504,21 @@ export default function Home() {
                           </>
                         )}
                       </button>
-                      <button type="button" className="btn-block" style={{ background: '#0078d4', cursor: isLoading ? 'not-allowed' : 'pointer' }} onClick={signInWithMicrosoft} disabled={isLoading}>
+                    </div>
+                    
+                    {/* Microsoft Button - Isolated Container */}
+                    <div className="text-center" style={{ marginBottom: '15px' }}>
+                      <button 
+                        type="button" 
+                        className="btn-block" 
+                        style={{ background: '#0078d4', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          signInWithMicrosoft();
+                        }}
+                        disabled={isLoading}
+                      >
                         {isLoading ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
@@ -506,8 +531,19 @@ export default function Home() {
                       </button>
                     </div>
                     
+                    {/* Signup Button - Isolated Container */}
                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                      <button type="button" onClick={handleSignup} className="btn" style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer' }} disabled={isLoading}>
+                      <button 
+                        type="button" 
+                        className="btn" 
+                        style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleSignup();
+                        }}
+                        disabled={isLoading}
+                      >
                         {isLoading ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Création en cours...
@@ -518,7 +554,14 @@ export default function Home() {
                           </>
                         )}
                       </button>
-                      <button onClick={() => setSelectedRole(null)} className="btn" style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E' }}>Retour</button>
+                      <button 
+                        type="button" 
+                        onClick={() => setSelectedRole(null)} 
+                        className="btn" 
+                        style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E' }}
+                      >
+                        Retour
+                      </button>
                     </div>
                   </div>
                 </div>
