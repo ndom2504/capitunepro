@@ -26,9 +26,59 @@ const db = firebase.firestore();
 
 export default function DashboardPro() {
   const [user, setUser] = useState(null);
-  const [clients, setClients] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [clients, setClients] = useState([
+    {
+      id: '1',
+      email: 'sophie.martin@email.com',
+      role: 'client',
+      lastLogin: new Date('2024-03-15T10:30:00'),
+      status: 'Actif',
+      projectType: 'Permis d\'études'
+    },
+    {
+      id: '2',
+      email: 'marc.bernard@email.com',
+      role: 'client',
+      lastLogin: new Date('2024-03-14T14:20:00'),
+      status: 'Actif',
+      projectType: 'Résidence permanente'
+    },
+    {
+      id: '3',
+      email: 'lucie.dubois@email.com',
+      role: 'client',
+      lastLogin: new Date('2024-03-13T09:15:00'),
+      status: 'En attente',
+      projectType: 'Permis de travail'
+    }
+  ]);
+  const [appointments, setAppointments] = useState([
+    {
+      id: '1',
+      clientName: 'Sophie Martin',
+      type: 'Consultation permis d\'études',
+      date: new Date('2024-03-24T14:00:00'),
+      duration: '1 heure',
+      status: 'Confirmé'
+    },
+    {
+      id: '2',
+      clientName: 'Marc Bernard',
+      type: 'Suivi dossier résidence',
+      date: new Date('2024-03-24T15:30:00'),
+      duration: '45 minutes',
+      status: 'Confirmé'
+    },
+    {
+      id: '3',
+      clientName: 'Lucie Dubois',
+      type: 'Première consultation',
+      date: new Date('2024-03-25T10:00:00'),
+      duration: '1 heure',
+      status: 'En attente'
+    }
+  ]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
