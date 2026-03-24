@@ -94,11 +94,6 @@ export default function Home() {
 
   // Sign in with Google
   const signInWithGoogle = async () => {
-    if (!selectedRole) {
-      setError('Veuillez d\'abord sélectionner un profil');
-      return;
-    }
-    
     if (isLoading) return;
     
     try {
@@ -121,11 +116,6 @@ export default function Home() {
 
   // Sign in with Microsoft
   const signInWithMicrosoft = async () => {
-    if (!selectedRole) {
-      setError('Veuillez d\'abord sélectionner un profil');
-      return;
-    }
-    
     if (isLoading) return;
     
     try {
@@ -138,7 +128,7 @@ export default function Home() {
     } catch (error) {
       console.error('Error signing in with Microsoft:', error);
       if (error.code === 'auth/popup-closed-by-user') {
-        return; // Attribution-NonCommercial 4.0 International License
+        return; // Ignorer si l'utilisateur ferme la popup
       }
       setError('Erreur de connexion avec Microsoft: ' + error.message);
     } finally {
