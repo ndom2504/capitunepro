@@ -46,6 +46,24 @@ export default function Home() {
     setLoadingAction(null);
   };
 
+  // Check if email exists and get its role
+  const checkEmailExistence = async (emailToCheck) => {
+    try {
+      const usersSnapshot = await db.collection('users')
+        .where('email', '==', emailToCheck)
+        .get();
+      
+      if (!usersSnapshot.empty) {
+        const existingUser = usersSnapshot.docs[0].data();
+        return existingUser.role;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error checking email existence:', error);
+      return null;
+    }
+  };
+
   // Check authentication state
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -124,13 +142,30 @@ export default function Home() {
       const userDoc = await db.collection('users').doc(result.user.uid).get();
       
       if (userDoc.exists) {
-        // Utilisateur existe, utiliser le rôle existant
+        // Utilisateur existe, vérifier si le rôle correspond
         const existingRole = userDoc.data().role;
         console.log('Existing user role:', existingRole);
+        
+        if (existingRole !== selectedRole) {
+          // Rôle différent - rejeter la connexion
+          await auth.signOut();
+          endAuthAction();
+          setError(`Ce compte existe déjà comme ${existingRole === 'client' ? 'Candidat' : 'Professionnel agréé'}. Veuillez sélectionner le bon profil.`);
+          return;
+        }
+        
         setSelectedRole(existingRole);
         await handleSuccessfulAuth(result.user);
       } else {
-        // Nouvel utilisateur, utiliser le rôle sélectionné
+        // Nouvel utilisateur, vérifier si l'email existe avec un rôle différent
+        const existingRole = await checkEmailExistence(result.user.email);
+        if (existingRole) {
+          await auth.signOut();
+          endAuthAction();
+          setError(`Ce compte existe déjà comme ${existingRole === 'client' ? 'Candidat' : 'Professionnel agréé'}. Veuillez sélectionner le bon profil.`);
+          return;
+        }
+        
         setSelectedRole(selectedRole);
         await handleSuccessfulAuth(result.user);
       }
@@ -164,13 +199,30 @@ export default function Home() {
       const userDoc = await db.collection('users').doc(result.user.uid).get();
       
       if (userDoc.exists) {
-        // Utilisateur existe, utiliser le rôle existant
+        // Utilisateur existe, vérifier si le rôle correspond
         const existingRole = userDoc.data().role;
         console.log('Existing user role:', existingRole);
+        
+        if (existingRole !== selectedRole) {
+          // Rôle différent - rejeter la connexion
+          await auth.signOut();
+          endAuthAction();
+          setError(`Ce compte existe déjà comme ${existingRole === 'client' ? 'Candidat' : 'Professionnel agréé'}. Veuillez sélectionner le bon profil.`);
+          return;
+        }
+        
         setSelectedRole(existingRole);
         await handleSuccessfulAuth(result.user);
       } else {
-        // Nouvel utilisateur, utiliser le rôle sélectionné
+        // Nouvel utilisateur, vérifier si l'email existe avec un rôle différent
+        const existingRole = await checkEmailExistence(result.user.email);
+        if (existingRole) {
+          await auth.signOut();
+          endAuthAction();
+          setError(`Ce compte existe déjà comme ${existingRole === 'client' ? 'Candidat' : 'Professionnel agréé'}. Veuillez sélectionner le bon profil.`);
+          return;
+        }
+        
         setSelectedRole(selectedRole);
         await handleSuccessfulAuth(result.user);
       }
@@ -239,6 +291,14 @@ export default function Home() {
     if (!beginAuthAction('email')) return;
     
     try {
+      // Vérifier si l'email existe avec un rôle différent
+      const existingRole = await checkEmailExistence(email);
+      if (existingRole && existingRole !== selectedRole) {
+        endAuthAction();
+        setError(`Ce compte existe déjà comme ${existingRole === 'client' ? 'Candidat' : 'Professionnel agréé'}. Veuillez sélectionner le bon profil.`);
+        return;
+      }
+
       const result = await auth.signInWithEmailAndPassword(email, password);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
@@ -277,6 +337,18 @@ export default function Home() {
     if (!beginAuthAction('signup')) return;
     
     try {
+      // Vérifier si l'email existe avec un rôle différent
+      const existingRole = await checkEmailExistence(email);
+      if (existingRole) {
+        endAuthAction();
+        if (existingRole !== selectedRole) {
+          setError(`Ce compte existe déjà comme ${existingRole === 'client' ? 'Candidat' : 'Professionnel agréé'}. Veuillez sélectionner le bon profil.`);
+        } else {
+          setError('Cet email existe déjà. Veuillez vous connecter avec votre mot de passe ou utiliser Google/Microsoft.');
+        }
+        return;
+      }
+
       const result = await auth.createUserWithEmailAndPassword(email, password);
       await handleSuccessfulAuth(result.user);
     } catch (error) {
