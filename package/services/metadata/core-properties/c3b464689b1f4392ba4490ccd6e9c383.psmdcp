@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coreProperties xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.openxmlformats.org/package/2006/metadata/core-properties">
+  <dc:creator>The Git Development Community</dc:creator>
+  <dc:description>Git for Windows focuses on offering a lightweight, native set of tools that bring the full feature set of the Git SCM to Windows while providing appropriate user interfaces for experienced Git users and novices alike.
+
+## Features
+
+- **Git BASH**: Git for Windows provides a BASH emulation used to run Git from the command line. *NIX users should feel right at home, as the BASH emulation behaves just like the "git" command in LINUX and UNIX environments.
+- **Git GUI**: As Windows users commonly expect graphical user interfaces, Git for Windows also provides the Git GUI, a powerful alternative to Git BASH, offering a graphical version of just about every Git command line function, as well as comprehensive visual diff tools.
+- **Shell Integration**: Simply right-click on a folder in Windows Explorer to access the BASH or GUI.
+
+## Package parameters
+
+See the [Git Package Parameters documentation page](https://github.com/chocolatey-community/chocolatey-packages/blob/master/automatic/git.install/ARGUMENTS.md).
+
+Example for passing in package parameters:
+`choco install git.install --params "'/GitAndUnixToolsOnPath /WindowsTerminal /NoAutoCrlf'"`
+
+## Notes
+
+- The package uses default install options minus desktop icons.
+- **If the package is out of date please check [Version History](#versionhistory) for the latest submitted version. If you have a question, please ask it in [Chocolatey Community Package Discussions](https://github.com/chocolatey-community/chocolatey-packages/discussions) or raise an issue on the [Chocolatey Community Packages Repository](https://github.com/chocolatey-community/chocolatey-packages/issues) if you have problems with the package. Disqus comments will generally not be responded to.**
+- Starting with version 2.49.0, installers for 32bit platforms are no longer available. If this is required, use an older version of the package.</dc:description>
+  <dc:identifier>git.install</dc:identifier>
+  <version>2.53.0.2</version>
+  <keywords>git vcs dvcs version-control msysgit admin foss cross-platform cli</keywords>
+  <lastModifiedBy>choco, Version=2.6.0.0, Culture=neutral, PublicKeyToken=79d02ea9cad655eb;Microsoft Windows NT 10.0.17763.0;.NET Framework 4.8</lastModifiedBy>
+</coreProperties>

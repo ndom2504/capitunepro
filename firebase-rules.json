@@ -1,0 +1,39 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid || root.child('professionals').child(auth.uid).exists()",
+        ".write": "$uid === auth.uid",
+        ".validate": "auth != null && newData.hasChildren(['email', 'role', 'createdAt'])"
+      }
+    },
+    "professionals": {
+      "$uid": {
+        ".read": "$uid === auth.uid || root.child('users').child(auth.uid).data('role') === 'client'",
+        ".write": "$uid === auth.uid",
+        ".validate": "auth != null && newData.hasChildren(['email', 'verified', 'specialization'])"
+      }
+    },
+    "projects": {
+      "$projectId": {
+        ".read": "data.child('clientId').val() === auth.uid || data.child('professionalId').val() === auth.uid",
+        ".write": "data.child('clientId').val() === auth.uid || data.child('professionalId').val() === auth.uid",
+        ".validate": "auth != null && newData.hasChildren(['clientId', 'professionalId', 'type', 'status'])"
+      }
+    },
+    "documents": {
+      "$docId": {
+        ".read": "data.child('ownerId').val() === auth.uid || data.child('sharedWith').hasChild(auth.uid)",
+        ".write": "data.child('ownerId').val() === auth.uid",
+        ".validate": "auth != null && newData.hasChildren(['ownerId', 'name', 'type'])"
+      }
+    },
+    "community": {
+      "$postId": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!newData.exists() || newData.child('authorId').val() === auth.uid)",
+        ".validate": "auth != null && newData.hasOnlyChildren(['content', 'authorId', 'authorName', 'authorRole', 'timestamp', 'likes', 'comments'])"
+      }
+    }
+  }
+}
