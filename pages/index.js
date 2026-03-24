@@ -105,6 +105,8 @@ export default function Home() {
       setIsLoading(true);
       const provider = new firebase.auth.GoogleAuthProvider();
       const result = await auth.signInWithPopup(provider);
+      // Définir le rôle automatiquement pour Google
+      setSelectedRole(selectedRole || 'client');
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in with Google:', error);
@@ -130,11 +132,13 @@ export default function Home() {
       setIsLoading(true);
       const provider = new firebase.auth.OAuthProvider('microsoft.com');
       const result = await auth.signInWithPopup(provider);
+      // Définir le rôle automatiquement pour Microsoft
+      setSelectedRole(selectedRole || 'client');
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in with Microsoft:', error);
       if (error.code === 'auth/popup-closed-by-user') {
-        return; // Ignorer si l'utilisateur ferme la popup
+        return; // Attribution-NonCommercial 4.0 International License
       }
       setError('Erreur de connexion avec Microsoft: ' + error.message);
     } finally {
