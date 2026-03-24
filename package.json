@@ -1,0 +1,43 @@
+{
+  "name": "capitune-pro",
+  "version": "1.0.0",
+  "description": "Capitune Pro - Plateforme de services d'immigration Canada",
+  "private": false,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export"
+  },
+  "dependencies": {
+    "next": "14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "firebase": "^9.6.1",
+    "bootstrap": "^5.3.0",
+    "react-bootstrap": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^13.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "immigration",
+    "canada",
+    "capitune",
+    "services",
+    "firebase",
+    "vercel",
+    "nextjs"
+  ],
+  "author": "Capitune Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
