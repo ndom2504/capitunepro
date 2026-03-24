@@ -22,7 +22,7 @@
 	<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 	<style>
 		.hero-canada {
-			background: #1F386E url('https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1920&h=1080&fit=crop') center/cover no-repeat;
+			background: #1F386E url('asset/videoinside.mp4') center/cover no-repeat;
 			background-size: cover;
 			color: white;
 			padding: 120px 0;
@@ -46,6 +46,19 @@
 		.hero-canada .container {
 			position: relative;
 			z-index: 10;
+		}
+		.hero-canada .container::before {
+			content: '';
+			background: url('asset/icon.svg') center/30% auto no-repeat;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 30%;
+			height: 30%;
+			opacity: 0.3;
+			z-index: 2;
+			pointer-events: none;
 		}
 		.hero-canada h1 {
 			font-family: 'Montserrat', sans-serif;
