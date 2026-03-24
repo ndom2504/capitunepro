@@ -22,7 +22,8 @@
 	<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 	<style>
 		.hero-canada {
-			background: linear-gradient(rgba(31,56,110,0.99), rgba(0,102,204,0.99)), url('asset/icon.svg') center/35% auto no-repeat, url('https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1920&h=1080&fit=crop') center/cover;
+			background: #1F386E url('asset/videos/integration-canada.mp4') center/cover no-repeat;
+			background-size: cover;
 			color: white;
 			padding: 120px 0;
 			text-align: center;
@@ -30,10 +31,40 @@
 			display: flex;
 			align-items: center;
 			position: relative;
+			font-family: 'Montserrat', sans-serif;
+		}
+		.hero-canada::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(31,56,110,0.4);
+			z-index: 1;
+			backdrop-filter: blur(3px);
+			-webkit-backdrop-filter: blur(3px);
 		}
 		.hero-canada .container {
 			position: relative;
 			z-index: 10;
+		}
+		.hero-canada h1 {
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 700;
+			color: white;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+		}
+		.hero-canada h3 {
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 400;
+			color: white;
+			text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+		}
+		.hero-canada p {
+			font-family: 'Montserrat', sans-serif;
+			color: white;
+			text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
 		}
 		.auth-section {
 			background: #f8f9fa;
@@ -59,11 +90,11 @@
 		}
 		.service-icon {
 			font-size: 3rem;
-			color: #0066cc;
+			color: #1F386E;
 			margin-bottom: 20px;
 		}
 		.cta-button {
-			background: linear-gradient(45deg, #003366, #0066cc);
+			background: #1F386E;
 			color: white;
 			padding: 15px 30px;
 			border: none;
@@ -71,10 +102,14 @@
 			font-size: 1.1rem;
 			cursor: pointer;
 			transition: all 0.3s;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 500;
+			text-shadow: none;
 		}
 		.cta-button:hover {
+			background: #2a4a8a;
 			transform: scale(1.05);
-			box-shadow: 0 5px 15px rgba(0,102,204,0.3);
+			box-shadow: 0 5px 15px rgba(31,56,110,0.3);
 		}
 		.login-form {
 			max-width: 400px;
@@ -144,7 +179,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12 text-center">
-				<h2 style="color: #003366; margin-bottom: 30px;">Nos Services</h2>
+				<h2 style="color: #1F386E; margin-bottom: 30px;">Nos Services</h2>
 				<p style="font-size: 1.1rem; margin-bottom: 50px;">Des solutions complètes pour tous vos besoins d'immigration</p>
 			</div>
 			<div class="col-md-4 col-sm-6">
@@ -180,10 +215,10 @@
 				<img src="https://images.unsplash.com/photo-1516214104703-d870798faf8f?w=600&h=400&fit=crop" class="img-responsive" alt="Immigration Canada">
 			</div>
 			<div class="col-md-6 col-sm-12 about-des">
-				<h2>Pourquoi choisir Capitune?</h2>
+				<h2 style="color: #1F386E; margin-top: 40px; margin-bottom: 20px;">Pourquoi choisir Capitune?</h2>
 				<p>Capitune est votre plateforme complète pour les services d'immigration au Canada. Notre équipe d'experts vous accompagne à chaque étape de votre projet d'immigration.</p>
 				<p>Avec notre technologie innovante et notre réseau de professionnels qualifiés, nous simplifions le processus d'immigration pour vous offrir une expérience transparente et réussie.</p>
-				<a href="#" onclick="showLogin()" class="btn btn-default">COMMENCER MAINTENANT</a>
+				<a href="#" onclick="showLogin()" class="btn" style="background: #1F386E; color: white; border: none; padding: 12px 25px; border-radius: 5px; font-family: 'Montserrat', sans-serif;">COMMENCER MAINTENANT</a>
 			</div>
 		</div>
 	</div>
