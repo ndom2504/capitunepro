@@ -31,7 +31,7 @@ export default function DashboardClient() {
       id: '1',
       type: 'Permis d\'études',
       progress: 65,
-      createdAt: new Date('2024-01-15'),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date('2024-01-15')),
       status: 'En cours',
       description: 'Université de Toronto - Computer Science'
     },
@@ -39,7 +39,7 @@ export default function DashboardClient() {
       id: '2',
       type: 'Demande de résidence',
       progress: 30,
-      createdAt: new Date('2024-02-01'),
+      createdAt: firebase.firestore.Timestamp.fromDate(new Date('2024-02-01')),
       status: 'En attente',
       description: 'Catégorie fédéral des travailleurs qualifiés'
     }
