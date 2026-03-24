@@ -30,20 +30,20 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(null); // null, 'email', 'google', 'microsoft', 'signup'
   const authLockRef = useRef(false);
   const router = useRouter();
 
-  const beginAuthAction = () => {
+  const beginAuthAction = (actionType) => {
     if (authLockRef.current) return false;
     authLockRef.current = true;
-    setIsLoading(true);
+    setLoadingAction(actionType);
     return true;
   };
 
   const endAuthAction = () => {
     authLockRef.current = false;
-    setIsLoading(false);
+    setLoadingAction(null);
   };
 
   // Check authentication state
@@ -107,7 +107,7 @@ export default function Home() {
 
   // Sign in with Google
   const signInWithGoogle = async () => {
-    if (!beginAuthAction()) return;
+    if (!beginAuthAction('google')) return;
     
     if (!selectedRole) {
       endAuthAction();
@@ -117,6 +117,7 @@ export default function Home() {
     
     try {
       const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
       const result = await auth.signInWithPopup(provider);
       
       // Vérifier si l'utilisateur existe dans Firestore
@@ -146,7 +147,7 @@ export default function Home() {
 
   // Sign in with Microsoft
   const signInWithMicrosoft = async () => {
-    if (!beginAuthAction()) return;
+    if (!beginAuthAction('microsoft')) return;
     
     if (!selectedRole) {
       endAuthAction();
@@ -156,6 +157,7 @@ export default function Home() {
     
     try {
       const provider = new firebase.auth.OAuthProvider('microsoft.com');
+      provider.setCustomParameters({ prompt: 'select_account' });
       const result = await auth.signInWithPopup(provider);
       
       // Vérifier si l'utilisateur existe dans Firestore
@@ -234,7 +236,7 @@ export default function Home() {
       return;
     }
 
-    if (!beginAuthAction()) return;
+    if (!beginAuthAction('email')) return;
     
     try {
       const result = await auth.signInWithEmailAndPassword(email, password);
@@ -272,7 +274,7 @@ export default function Home() {
       return;
     }
 
-    if (!beginAuthAction()) return;
+    if (!beginAuthAction('signup')) return;
     
     try {
       const result = await auth.createUserWithEmailAndPassword(email, password);
@@ -482,11 +484,11 @@ export default function Home() {
                       <button 
                         type="button" 
                         className="btn-block" 
-                        style={{ background: '#1F386E', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
-                        disabled={isLoading}
+                        style={{ background: '#1F386E', cursor: loadingAction ? 'not-allowed' : 'pointer' }} 
+                        disabled={loadingAction !== null}
                         onClick={handleSubmit}
                       >
-                        {isLoading ? (
+                        {loadingAction === 'email' ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
                           </>
@@ -507,11 +509,11 @@ export default function Home() {
                       <button 
                         type="button" 
                         className="btn-block" 
-                        style={{ background: '#db4437', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
-                        disabled={isLoading}
+                        style={{ background: '#db4437', cursor: loadingAction ? 'not-allowed' : 'pointer' }} 
+                        disabled={loadingAction !== null}
                         onClick={signInWithGoogle}
                       >
-                        {isLoading ? (
+                        {loadingAction === 'google' ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
                           </>
@@ -528,11 +530,11 @@ export default function Home() {
                       <button 
                         type="button" 
                         className="btn-block" 
-                        style={{ background: '#0078d4', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
-                        disabled={isLoading}
+                        style={{ background: '#0078d4', cursor: loadingAction ? 'not-allowed' : 'pointer' }} 
+                        disabled={loadingAction !== null}
                         onClick={signInWithMicrosoft}
                       >
-                        {isLoading ? (
+                        {loadingAction === 'microsoft' ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Connexion en cours...
                           </>
@@ -549,11 +551,11 @@ export default function Home() {
                       <button 
                         type="button" 
                         className="btn" 
-                        style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: isLoading ? 'not-allowed' : 'pointer' }} 
-                        disabled={isLoading}
+                        style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: loadingAction ? 'not-allowed' : 'pointer' }} 
+                        disabled={loadingAction !== null}
                         onClick={handleSignup}
                       >
-                        {isLoading ? (
+                        {loadingAction === 'signup' ? (
                           <>
                             <i className="fas fa-spinner fa-spin"></i> Création en cours...
                           </>
@@ -568,6 +570,7 @@ export default function Home() {
                         onClick={() => setSelectedRole(null)} 
                         className="btn" 
                         style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E' }}
+                        disabled={loadingAction !== null}
                       >
                         Retour
                       </button>
