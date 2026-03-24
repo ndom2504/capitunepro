@@ -96,13 +96,30 @@ export default function Home() {
   const signInWithGoogle = async () => {
     if (isLoading) return;
     
+    if (!selectedRole) {
+      setError('Veuillez d\'abord sélectionner un profil');
+      return;
+    }
+    
     try {
       setIsLoading(true);
       const provider = new firebase.auth.GoogleAuthProvider();
       const result = await auth.signInWithPopup(provider);
-      // Définir le rôle automatiquement pour Google
-      setSelectedRole(selectedRole || 'client');
-      await handleSuccessfulAuth(result.user);
+      
+      // Vérifier si l'utilisateur existe dans Firestore
+      const userDoc = await db.collection('users').doc(result.user.uid).get();
+      
+      if (userDoc.exists) {
+        // Utilisateur existe, utiliser le rôle existant
+        const existingRole = userDoc.data().role;
+        console.log('Existing user role:', existingRole);
+        setSelectedRole(existingRole);
+        await handleSuccessfulAuth(result.user);
+      } else {
+        // Nouvel utilisateur, utiliser le rôle sélectionné
+        setSelectedRole(selectedRole);
+        await handleSuccessfulAuth(result.user);
+      }
     } catch (error) {
       console.error('Error signing in with Google:', error);
       if (error.code === 'auth/popup-closed-by-user') {
@@ -118,13 +135,30 @@ export default function Home() {
   const signInWithMicrosoft = async () => {
     if (isLoading) return;
     
+    if (!selectedRole) {
+      setError('Veuillez d\'abord sélectionner un profil');
+      return;
+    }
+    
     try {
       setIsLoading(true);
       const provider = new firebase.auth.OAuthProvider('microsoft.com');
       const result = await auth.signInWithPopup(provider);
-      // Définir le rôle automatiquement pour Microsoft
-      setSelectedRole(selectedRole || 'client');
-      await handleSuccessfulAuth(result.user);
+      
+      // Vérifier si l'utilisateur existe dans Firestore
+      const userDoc = await db.collection('users').doc(result.user.uid).get();
+      
+      if (userDoc.exists) {
+        // Utilisateur existe, utiliser le rôle existant
+        const existingRole = userDoc.data().role;
+        console.log('Existing user role:', existingRole);
+        setSelectedRole(existingRole);
+        await handleSuccessfulAuth(result.user);
+      } else {
+        // Nouvel utilisateur, utiliser le rôle sélectionné
+        setSelectedRole(selectedRole);
+        await handleSuccessfulAuth(result.user);
+      }
     } catch (error) {
       console.error('Error signing in with Microsoft:', error);
       if (error.code === 'auth/popup-closed-by-user') {
@@ -177,6 +211,16 @@ export default function Home() {
       return;
     }
 
+    if (!email) {
+      setError('Veuillez entrer votre email');
+      return;
+    }
+
+    if (!password) {
+      setError('Veuillez entrer votre mot de passe');
+      return;
+    }
+
     if (isLoading) return;
     
     try {
@@ -185,7 +229,13 @@ export default function Home() {
       await handleSuccessfulAuth(result.user);
     } catch (error) {
       console.error('Error signing in:', error);
-      setError('Erreur de connexion: ' + error.message);
+      if (error.code === 'auth/user-not-found') {
+        setError('Email non trouvé. Veuillez créer un compte.');
+      } else if (error.code === 'auth/wrong-password') {
+        setError('Mot de passe incorrect.');
+      } else {
+        setError('Erreur de connexion: ' + error.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -197,6 +247,16 @@ export default function Home() {
     
     if (!selectedRole) {
       setError('Veuillez d\'abord sélectionner un profil');
+      return;
+    }
+
+    if (!email) {
+      setError('Veuillez entrer votre email');
+      return;
+    }
+
+    if (!password) {
+      setError('Veuillez entrer votre mot de passe');
       return;
     }
 
@@ -213,8 +273,6 @@ export default function Home() {
         try {
           setIsLoading(false); // Reset loading state before retry
           const loginResult = await auth.signInWithEmailAndPassword(email, password);
-          // Utiliser selectedRole pour la redirection
-          setSelectedRole(selectedRole);
           await handleSuccessfulAuth(loginResult.user);
         } catch (loginError) {
           console.error('Error auto-login:', loginError);
