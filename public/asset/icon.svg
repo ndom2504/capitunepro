@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Gradient définition -->
+  <defs>
+    <linearGradient id="gradientOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff9408;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff7c00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradientBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1F386E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2a4a8a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Cercle principal avec le "C" -->
+  <circle cx="50" cy="50" r="45" fill="url(#gradientBlue)" />
+  
+  <!-- Cercle intérieur orange -->
+  <circle cx="50" cy="50" r="35" fill="none" stroke="url(#gradientOrange)" stroke-width="3" />
+  
+  <!-- Lettre "C" stylisée -->
+  <g transform="translate(50, 50)">
+    <!-- Arc du C -->
+    <path d="M -20 -15 A 20 20 0 0 1 -20 15" 
+          fill="none" 
+          stroke="url(#gradientOrange)" 
+          stroke-width="4" 
+          stroke-linecap="round"/>
+    
+    <!-- Points décoratifs -->
+    <circle cx="15" cy="-10" r="2.5" fill="url(#gradientOrange)" />
+    <circle cx="18" cy="0" r="2.5" fill="url(#gradientOrange)" />
+    <circle cx="15" cy="10" r="2.5" fill="url(#gradientOrange)" />
+  </g>
+  
+  <!-- Texte "CAPITUNE" autour du cercle -->
+  <path id="circlePath" d="M 15, 50 A 35 35 0 0 1 85 50" fill="none"/>
+  <text font-family="Montserrat, sans-serif" font-size="10" font-weight="bold" fill="url(#gradientOrange)" letter-spacing="1">
+    <textPath href="#circlePath" startOffset="50%" text-anchor="middle">
+      CAPITUNE
+    </textPath>
+  </text>
+</svg>

@@ -25,6 +25,7 @@ const db = firebase.firestore();
 export default function DashboardClient() {
   const [activeTab, setActiveTab] = useState('projets');
   const [user, setUser] = useState(null);
+  const [showInsideOptions, setShowInsideOptions] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -275,22 +276,34 @@ export default function DashboardClient() {
           </button>
 
           <button
-            className={`nav-bubble ${activeTab === 'inside' ? 'active' : ''}`}
-            onClick={() => setActiveTab('inside')}
-            title="Communauté"
-          >
-            <i className="fas fa-users"></i>
-            <span>Inside</span>
-          </button>
-
-          <button
             className={`nav-bubble ${activeTab === 'documents' ? 'active' : ''}`}
             onClick={() => setActiveTab('documents')}
             title="Documents"
           >
-            <i className="fas fa-folder-shield"></i>
+            <i className="fas fa-file-alt"></i>
             <span>Documents</span>
           </button>
+
+          <button
+            className={`nav-bubble inside-btn ${activeTab === 'inside' ? 'active' : ''}`}
+            onClick={() => {
+              setShowInsideOptions(!showInsideOptions);
+              setActiveTab('inside');
+            }}
+            title="Inside"
+          >
+            <i className="fas fa-plus"></i>
+            <span>Créer</span>
+          </button>
+
+          <div className="inside-options" style={{ display: showInsideOptions ? 'block' : 'none' }}>
+            <button onClick={() => { setActiveTab('inside'); setShowInsideOptions(false); }}>
+              <i className="fas fa-users"></i> Inside
+            </button>
+            <button onClick={() => { setActiveTab('inside'); setShowInsideOptions(false); }}>
+              <i className="fas fa-bullhorn"></i> Publier
+            </button>
+          </div>
 
           <button
             className={`nav-bubble ${activeTab === 'messagerie' ? 'active' : ''}`}
@@ -332,8 +345,8 @@ export default function DashboardClient() {
 
         .project-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 12px 30px rgba(255, 165, 0, 0.15);
-          border-color: #ffa500;
+          box-shadow: 0 12px 30px rgba(255, 148, 8, 0.15);
+          border-color: #ff9408;
         }
 
         .project-header {
@@ -350,7 +363,7 @@ export default function DashboardClient() {
         }
 
         .project-status {
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           padding: 5px 12px;
           border-radius: 20px;
@@ -378,7 +391,7 @@ export default function DashboardClient() {
         }
 
         .progress-fill {
-          background: linear-gradient(90deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(90deg, #ff9408 0%, #ff7c00 100%);
           height: 100%;
           transition: width 0.3s ease;
         }
@@ -391,7 +404,7 @@ export default function DashboardClient() {
 
         .btn-new-project {
           grid-column: 1 / -1;
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 20px;
@@ -408,7 +421,7 @@ export default function DashboardClient() {
 
         .btn-new-project:hover {
           transform: translateY(-3px);
-          box-shadow: 0 10px 25px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 10px 25px rgba(255, 148, 8, 0.3);
         }
 
         .inside-container {
@@ -425,7 +438,7 @@ export default function DashboardClient() {
         }
 
         .card-header {
-          border-bottom: 2px solid #ffa500;
+          border-bottom: 2px solid #ff9408;
           padding-bottom: 15px;
           margin-bottom: 20px;
         }
@@ -450,7 +463,7 @@ export default function DashboardClient() {
         }
 
         .question-item:hover {
-          background: linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+          background: linear-gradient(135deg, rgba(255, 148, 8, 0.1) 0%, rgba(255, 148, 8, 0.05) 100%);
         }
 
         .question-item p {
@@ -465,7 +478,7 @@ export default function DashboardClient() {
 
         .btn-inside {
           width: 100%;
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 15px;
@@ -477,7 +490,7 @@ export default function DashboardClient() {
 
         .btn-inside:hover {
           transform: translateY(-3px);
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.3);
         }
 
         .documents-container {
@@ -497,8 +510,8 @@ export default function DashboardClient() {
         }
 
         .doc-card:hover {
-          border-color: #ffa500;
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.15);
+          border-color: #ff9408;
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.15);
           transform: translateY(-5px);
         }
 
@@ -512,7 +525,7 @@ export default function DashboardClient() {
 
         .doc-header i {
           font-size: 2.5rem;
-          color: #ffa500;
+          color: #ff9408;
           margin-bottom: 10px;
         }
 
@@ -547,7 +560,7 @@ export default function DashboardClient() {
 
         .btn-upload {
           grid-column: 1 / -1;
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 15px;
@@ -559,7 +572,7 @@ export default function DashboardClient() {
 
         .btn-upload:hover {
           transform: translateY(-3px);
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.3);
         }
 
         .messaging-container {
@@ -572,13 +585,13 @@ export default function DashboardClient() {
           background: white;
           border-radius: 12px;
           padding: 20px;
-          border-left: 4px solid #ffa500;
+          border-left: 4px solid #ff9408;
           transition: all 0.3s ease;
           cursor: pointer;
         }
 
         .message-card:hover {
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.15);
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.15);
           transform: translateX(5px);
         }
 
@@ -600,7 +613,7 @@ export default function DashboardClient() {
         }
 
         .btn-message {
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 15px;
@@ -612,7 +625,7 @@ export default function DashboardClient() {
 
         .btn-message:hover {
           transform: translateY(-3px);
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.3);
         }
 
         .profile-container {
@@ -631,12 +644,12 @@ export default function DashboardClient() {
           gap: 30px;
           margin-bottom: 30px;
           padding-bottom: 30px;
-          border-bottom: 2px solid #ffa500;
+          border-bottom: 2px solid #ff9408;
           align-items: center;
         }
 
         .profile-header i {
-          color: #ffa500;
+          color: #ff9408;
         }
 
         .profile-info h2 {
@@ -667,7 +680,7 @@ export default function DashboardClient() {
 
         .btn-edit,
         .btn-logout {
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 12px 20px;
@@ -683,7 +696,7 @@ export default function DashboardClient() {
         .btn-edit:hover,
         .btn-logout:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 15px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 6px 15px rgba(255, 148, 8, 0.3);
         }
 
         .btn-logout {

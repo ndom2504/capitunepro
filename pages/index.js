@@ -612,11 +612,11 @@ export default function Home() {
                     </div>
                     
                     {/* Signup */}
-                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
                       <button 
                         type="button" 
                         className="btn" 
-                        style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: loadingAction ? 'not-allowed' : 'pointer' }} 
+                        style={{ background: '#28a745', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem', cursor: loadingAction ? 'not-allowed' : 'pointer', width: '100%' }} 
                         disabled={loadingAction !== null}
                         onClick={handleSignup}
                       >
@@ -634,7 +634,7 @@ export default function Home() {
                         type="button" 
                         onClick={() => setSelectedRole(null)} 
                         className="btn" 
-                        style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E' }}
+                        style={{ background: 'none', border: '1px solid #1F386E', color: '#1F386E', width: '100%', padding: '12px 25px', borderRadius: '8px', fontSize: '1rem' }}
                         disabled={loadingAction !== null}
                       >
                         Retour

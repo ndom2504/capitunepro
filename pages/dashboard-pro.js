@@ -25,6 +25,7 @@ const db = firebase.firestore();
 export default function DashboardPro() {
   const [activeTab, setActiveTab] = useState('projets');
   const [user, setUser] = useState(null);
+  const [showInsideOptions, setShowInsideOptions] = useState(false);
   const [clients, setClients] = useState([
     {
       id: '1',
@@ -310,22 +311,34 @@ export default function DashboardPro() {
           </button>
 
           <button
-            className={`nav-bubble ${activeTab === 'inside' ? 'active' : ''}`}
-            onClick={() => setActiveTab('inside')}
-            title="Réseau"
-          >
-            <i className="fas fa-network-wired"></i>
-            <span>Inside</span>
-          </button>
-
-          <button
             className={`nav-bubble ${activeTab === 'documents' ? 'active' : ''}`}
             onClick={() => setActiveTab('documents')}
             title="Documents"
           >
-            <i className="fas fa-file-contract"></i>
+            <i className="fas fa-file-alt"></i>
             <span>Documents</span>
           </button>
+
+          <button
+            className={`nav-bubble inside-btn ${activeTab === 'inside' ? 'active' : ''}`}
+            onClick={() => {
+              setShowInsideOptions(!showInsideOptions);
+              setActiveTab('inside');
+            }}
+            title="Réseau"
+          >
+            <i className="fas fa-plus"></i>
+            <span>Créer</span>
+          </button>
+
+          <div className="inside-options" style={{ display: showInsideOptions ? 'block' : 'none' }}>
+            <button onClick={() => { setActiveTab('inside'); setShowInsideOptions(false); }}>
+              <i className="fas fa-network-wired"></i> Inside
+            </button>
+            <button onClick={() => { setActiveTab('inside'); setShowInsideOptions(false); }}>
+              <i className="fas fa-bullhorn"></i> Publier
+            </button>
+          </div>
 
           <button
             className={`nav-bubble ${activeTab === 'messagerie' ? 'active' : ''}`}
@@ -366,8 +379,8 @@ export default function DashboardPro() {
 
         .client-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 12px 30px rgba(255, 165, 0, 0.15);
-          border-color: #ffa500;
+          box-shadow: 0 12px 30px rgba(255, 148, 8, 0.15);
+          border-color: #ff9408;
         }
 
         .client-header {
@@ -390,7 +403,7 @@ export default function DashboardPro() {
         }
 
         .project-badge {
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           padding: 5px 12px;
           border-radius: 20px;
@@ -411,7 +424,7 @@ export default function DashboardPro() {
 
         .btn-client-action {
           width: 100%;
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 12px;
@@ -423,12 +436,12 @@ export default function DashboardPro() {
 
         .btn-client-action:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 15px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 6px 15px rgba(255, 148, 8, 0.3);
         }
 
         .btn-add-client {
           grid-column: 1 / -1;
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 20px;
@@ -445,7 +458,7 @@ export default function DashboardPro() {
 
         .btn-add-client:hover {
           transform: translateY(-3px);
-          box-shadow: 0 10px 25px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 10px 25px rgba(255, 148, 8, 0.3);
         }
 
         .network-container {
@@ -462,7 +475,7 @@ export default function DashboardPro() {
         }
 
         .card-header {
-          border-bottom: 2px solid #ffa500;
+          border-bottom: 2px solid #ff9408;
           padding-bottom: 15px;
           margin-bottom: 20px;
         }
@@ -481,20 +494,20 @@ export default function DashboardPro() {
         .stat-item {
           text-align: center;
           padding: 20px;
-          background: linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+          background: linear-gradient(135deg, rgba(255, 148, 8, 0.1) 0%, rgba(255, 148, 8, 0.05) 100%);
           border-radius: 10px;
         }
 
         .stat-number {
           font-size: 2rem;
           font-weight: 700;
-          color: #ffa500;
+          color: #ff9408;
           margin-bottom: 10px;
         }
 
         .btn-network {
           width: 100%;
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 15px;
@@ -506,7 +519,7 @@ export default function DashboardPro() {
 
         .btn-network:hover {
           transform: translateY(-3px);
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.3);
         }
 
         .documents-template-container {
@@ -526,7 +539,7 @@ export default function DashboardPro() {
 
         .template-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 12px 30px rgba(255, 165, 0, 0.15);
+          box-shadow: 0 12px 30px rgba(255, 148, 8, 0.15);
         }
 
         .template-header {
@@ -535,7 +548,7 @@ export default function DashboardPro() {
 
         .template-header i {
           font-size: 3rem;
-          color: #ffa500;
+          color: #ff9408;
           margin-bottom: 10px;
         }
 
@@ -552,7 +565,7 @@ export default function DashboardPro() {
         }
 
         .btn-template {
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 10px 20px;
@@ -565,14 +578,14 @@ export default function DashboardPro() {
 
         .btn-template:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 15px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 6px 15px rgba(255, 148, 8, 0.3);
         }
 
         .btn-upload-template {
           grid-column: 1 / -1;
           background: white;
-          border: 2px dashed #ffa500;
-          color: #ffa500;
+          border: 2px dashed #ff9408;
+          color: #ff9408;
           padding: 20px;
           border-radius: 15px;
           cursor: pointer;
@@ -585,7 +598,7 @@ export default function DashboardPro() {
         }
 
         .btn-upload-template:hover {
-          background: rgba(255, 165, 0, 0.1);
+          background: rgba(255, 148, 8, 0.1);
         }
 
         .messaging-pro-container {
@@ -598,13 +611,13 @@ export default function DashboardPro() {
           background: white;
           border-radius: 12px;
           padding: 20px;
-          border-left: 4px solid #ffa500;
+          border-left: 4px solid #ff9408;
           transition: all 0.3s ease;
           cursor: pointer;
         }
 
         .conversation-card:hover {
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.15);
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.15);
           transform: translateX(5px);
         }
 
@@ -619,7 +632,7 @@ export default function DashboardPro() {
           width: 50px;
           height: 50px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           display: flex;
           align-items: center;
@@ -648,7 +661,7 @@ export default function DashboardPro() {
         }
 
         .btn-message-pro {
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 15px;
@@ -660,7 +673,7 @@ export default function DashboardPro() {
 
         .btn-message-pro:hover {
           transform: translateY(-3px);
-          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 8px 20px rgba(255, 148, 8, 0.3);
         }
 
         .profile-pro-container {
@@ -679,12 +692,12 @@ export default function DashboardPro() {
           gap: 30px;
           margin-bottom: 30px;
           padding-bottom: 30px;
-          border-bottom: 2px solid #ffa500;
+          border-bottom: 2px solid #ff9408;
           align-items: center;
         }
 
         .profile-pro-header i {
-          color: #ffa500;
+          color: #ff9408;
         }
 
         .profile-pro-info h2 {
@@ -727,7 +740,7 @@ export default function DashboardPro() {
 
         .btn-edit-pro,
         .btn-logout-pro {
-          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          background: linear-gradient(135deg, #ff9408 0%, #ff7c00 100%);
           color: white;
           border: none;
           padding: 12px 20px;
@@ -743,7 +756,7 @@ export default function DashboardPro() {
         .btn-edit-pro:hover,
         .btn-logout-pro:hover {
           transform: translateY(-2px);
-          box-shadow: 0 6px 15px rgba(255, 165, 0, 0.3);
+          box-shadow: 0 6px 15px rgba(255, 148, 8, 0.3);
         }
 
         .btn-logout-pro {
