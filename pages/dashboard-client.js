@@ -5,7 +5,6 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDtZBLZ75lmo0d5q36CRYOxrKmH0QvIifQ",
   authDomain: "capitunepro.firebaseapp.com",
@@ -16,7 +15,6 @@ const firebaseConfig = {
   measurementId: "G-VTV29B3CGG"
 };
 
-// Initialize Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
@@ -25,128 +23,677 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 export default function DashboardClient() {
+  const [activeTab, setActiveTab] = useState('projets');
   const [user, setUser] = useState(null);
-  const [projects, setProjects] = useState([
-    {
-      id: '1',
-      type: 'Permis d\'études',
-      progress: 65,
-      createdAt: firebase.firestore.Timestamp.fromDate(new Date('2024-01-15')),
-      status: 'En cours',
-      description: 'Université de Toronto - Computer Science'
-    },
-    {
-      id: '2',
-      type: 'Demande de résidence',
-      progress: 30,
-      createdAt: firebase.firestore.Timestamp.fromDate(new Date('2024-02-01')),
-      status: 'En attente',
-      description: 'Catégorie fédéral des travailleurs qualifiés'
-    }
-  ]);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        console.log('User is signed in:', user.email);
-        setUser(user);
-        loadUserProjects(user.uid);
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
       } else {
-        console.log('User is signed out, redirecting to home');
         router.push('/');
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const loadUserProjects = async (userId) => {
+  const handleLogout = async () => {
     try {
-      const snapshot = await db.collection('projects').where('clientId', '==', userId).get();
-      const userProjects = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setProjects(userProjects);
+      await auth.signOut();
+      router.push('/');
     } catch (error) {
-      console.error('Error loading projects:', error);
+      console.error('Error logging out:', error);
     }
   };
 
-  const logout = () => {
-    auth.signOut();
+  const handleSettings = () => {
+    setActiveTab('profil');
   };
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div>Chargement...</div>
-      </div>
-    );
+  if (!user) {
+    return <div className="dashboard-container">Chargement...</div>;
   }
 
   return (
     <>
       <Head>
-        <title>Tableau de Bord Client - Capitune Pro</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <title>Dashboard Candidat - Capitune Pro</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
       </Head>
 
-      <div style={{ fontFamily: 'Montserrat, sans-serif', backgroundColor: '#f5f7fa', minHeight: '100vh' }}>
-        {/* Header */}
-        <nav style={{ background: '#1F386E', padding: '15px 0', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ color: 'white', margin: 0, fontWeight: 'bold' }}>Capitune Pro - Client</h3>
-            <button onClick={logout} style={{ background: 'none', border: '1px solid white', color: 'white', padding: '8px 15px', borderRadius: '5px' }}>
-              Déconnexion
-            </button>
-          </div>
-        </nav>
-
-        {/* Main Content */}
-        <div style={{ padding: '30px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-            <div style={{ background: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-              <h4 style={{ color: '#1F386E', marginBottom: '15px' }}>Projets Actifs</h4>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1F386E', marginBottom: '10px' }}>{projects.length}</div>
+      <div className="dashboard-container">
+        <header className="dashboard-header">
+          <div className="dashboard-header-content">
+            <div className="dashboard-header-left">
+              <img src="/asset/icon.svg" alt="Capitune Pro" title="Accueil" />
             </div>
-            <div style={{ background: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-              <h4 style={{ color: '#1F386E', marginBottom: '15px' }}>Documents Soumis</h4>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1F386E', marginBottom: '10px' }}>12</div>
+            <div className="dashboard-header-center">
+              <h1>Capitune Pro</h1>
             </div>
-            <div style={{ background: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-              <h4 style={{ color: '#1F386E', marginBottom: '15px' }}>Jours en Traitement</h4>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1F386E', marginBottom: '10px' }}>45</div>
-            </div>
-            <div style={{ background: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-              <h4 style={{ color: '#1F386E', marginBottom: '15px' }}>Étapes Complétées</h4>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1F386E', marginBottom: '10px' }}>2</div>
+            <div className="dashboard-header-right">
+              <button className="settings-btn" onClick={handleSettings} title="Paramètres">
+                <i className="fas fa-cog"></i>
+              </button>
             </div>
           </div>
+        </header>
 
-          {/* Projects List */}
-          <h3 style={{ color: '#1F386E', marginBottom: '30px' }}>Mes Projets</h3>
-          {projects.map(project => (
-            <div key={project.id} style={{ background: 'white', padding: '20px', borderRadius: '10px', marginBottom: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                <div>
-                  <h4 style={{ color: '#1F386E', margin: 0 }}>{project.type}</h4>
-                  <p style={{ margin: 0, color: '#666' }}>Soumis: {new Date(project.createdAt?.toDate()).toLocaleDateString('fr-FR')}</p>
+        <div className="dashboard-content">
+          <div className="dashboard-inner">
+            {activeTab === 'projets' && (
+              <div className="dashboard-section">
+                <div className="section-title">
+                  <i className="fas fa-folder-open"></i>
+                  Mes Projets
                 </div>
-                <button style={{ background: '#1F386E', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px' }}>
-                  Voir Détails
-                </button>
+                <div className="projects-grid">
+                  <div className="project-card">
+                    <div className="project-header">
+                      <h3>Permis d'études</h3>
+                      <span className="project-status">En cours</span>
+                    </div>
+                    <p className="project-description">Université de Toronto - Computer Science</p>
+                    <div className="progress-bar">
+                      <div className="progress-fill" style={{ width: '65%' }}></div>
+                    </div>
+                    <p className="progress-text">65% complété</p>
+                  </div>
+
+                  <div className="project-card">
+                    <div className="project-header">
+                      <h3>Résidence Permanente</h3>
+                      <span className="project-status pending">En attente</span>
+                    </div>
+                    <p className="project-description">Catégorie fédérale des travailleurs qualifiés</p>
+                    <div className="progress-bar">
+                      <div className="progress-fill" style={{ width: '30%' }}></div>
+                    </div>
+                    <p className="progress-text">30% complété</p>
+                  </div>
+
+                  <button className="btn-new-project">
+                    <i className="fas fa-plus"></i> Nouveau Projet
+                  </button>
+                </div>
               </div>
-              <div style={{ background: '#e9ecef', borderRadius: '5px', height: '8px', marginBottom: '10px' }}>
-                <div style={{ background: '#1F386E', height: '100%', borderRadius: '5px', width: `${project.progress || 0}%` }}></div>
+            )}
+
+            {activeTab === 'inside' && (
+              <div className="dashboard-section">
+                <div className="section-title">
+                  <i className="fas fa-users"></i>
+                  Communauté (Inside)
+                </div>
+                <div className="inside-container">
+                  <div className="inside-card">
+                    <div className="card-header">
+                      <h3>Questions Populaires</h3>
+                    </div>
+                    <div className="question-list">
+                      <div className="question-item">
+                        <p><strong>Comment obtenir un permis d'études?</strong></p>
+                        <p className="question-meta">15 réponses • 234 vues</p>
+                      </div>
+                      <div className="question-item">
+                        <p><strong>Délai de traitement pour la résidence permanente</strong></p>
+                        <p className="question-meta">8 réponses • 156 vues</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="inside-card">
+                    <div className="card-header">
+                      <h3>Membres Actifs</h3>
+                    </div>
+                    <button className="btn-inside">Voir la communauté</button>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            )}
+
+            {activeTab === 'documents' && (
+              <div className="dashboard-section">
+                <div className="section-title">
+                  <i className="fas fa-folder-shield"></i>
+                  Gestion Documentaire
+                </div>
+                <div className="documents-container">
+                  <div className="doc-card">
+                    <div className="doc-header">
+                      <i className="fas fa-file-pdf"></i>
+                      <h3>Passeport</h3>
+                    </div>
+                    <p className="doc-status valid">✓ Validé</p>
+                  </div>
+
+                  <div className="doc-card">
+                    <div className="doc-header">
+                      <i className="fas fa-file-pdf"></i>
+                      <h3>Certificat d'études</h3>
+                    </div>
+                    <p className="doc-status pending">⏱ À corriger</p>
+                  </div>
+
+                  <div className="doc-card empty">
+                    <div className="doc-header">
+                      <i className="fas fa-file-pdf"></i>
+                      <h3>Lettre d'acceptation</h3>
+                    </div>
+                    <p className="doc-status missing">✕ Manquant</p>
+                  </div>
+
+                  <button className="btn-upload">
+                    <i className="fas fa-cloud-upload-alt"></i> Télécharger Document
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'messagerie' && (
+              <div className="dashboard-section">
+                <div className="section-title">
+                  <i className="fas fa-envelope"></i>
+                  Messagerie
+                </div>
+                <div className="messaging-container">
+                  <div className="message-card">
+                    <div className="message-header">
+                      <h3>Votre Professionnel Agréé</h3>
+                    </div>
+                    <p className="message-preview">Pierre Dubois vous a envoyé un message...</p>
+                    <p className="message-time">Aujourd'hui à 14:30</p>
+                  </div>
+
+                  <div className="message-card">
+                    <div className="message-header">
+                      <h3>Support Capitune</h3>
+                    </div>
+                    <p className="message-preview">Merci d'avoir choisi Capitune Pro...</p>
+                    <p className="message-time">Hier à 10:15</p>
+                  </div>
+
+                  <button className="btn-message">
+                    <i className="fas fa-edit"></i> Nouveau Message
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'profil' && (
+              <div className="dashboard-section">
+                <div className="section-title">
+                  <i className="fas fa-user-circle"></i>
+                  Mon Profil
+                </div>
+                <div className="profile-container">
+                  <div className="profile-card">
+                    <div className="profile-header">
+                      <i className="fas fa-user-circle fa-5x"></i>
+                      <div className="profile-info">
+                        <h2>{user.email}</h2>
+                        <p>Candidat</p>
+                      </div>
+                    </div>
+
+                    <div className="profile-section">
+                      <h4>Informations Personnelles</h4>
+                      <button className="btn-edit">
+                        <i className="fas fa-edit"></i> Modifier
+                      </button>
+                    </div>
+
+                    <div className="profile-section">
+                      <h4>Paramètres de Sécurité</h4>
+                      <button className="btn-edit">
+                        <i className="fas fa-lock"></i> Changer mot de passe
+                      </button>
+                    </div>
+
+                    <div className="profile-section">
+                      <h4>Compte</h4>
+                      <button className="btn-logout" onClick={handleLogout}>
+                        <i className="fas fa-sign-out-alt"></i> Déconnexion
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
+        <nav className="bottom-nav">
+          <button
+            className={`nav-bubble ${activeTab === 'projets' ? 'active' : ''}`}
+            onClick={() => setActiveTab('projets')}
+            title="Mes Projets"
+          >
+            <i className="fas fa-folder-open"></i>
+            <span>Projets</span>
+          </button>
+
+          <button
+            className={`nav-bubble ${activeTab === 'inside' ? 'active' : ''}`}
+            onClick={() => setActiveTab('inside')}
+            title="Communauté"
+          >
+            <i className="fas fa-users"></i>
+            <span>Inside</span>
+          </button>
+
+          <button
+            className={`nav-bubble ${activeTab === 'documents' ? 'active' : ''}`}
+            onClick={() => setActiveTab('documents')}
+            title="Documents"
+          >
+            <i className="fas fa-folder-shield"></i>
+            <span>Documents</span>
+          </button>
+
+          <button
+            className={`nav-bubble ${activeTab === 'messagerie' ? 'active' : ''}`}
+            onClick={() => setActiveTab('messagerie')}
+            title="Messagerie"
+          >
+            <i className="fas fa-envelope"></i>
+            <span>Messages</span>
+          </button>
+
+          <button
+            className={`nav-bubble ${activeTab === 'profil' ? 'active' : ''}`}
+            onClick={() => setActiveTab('profil')}
+            title="Mon Profil"
+          >
+            <i className="fas fa-user-circle"></i>
+            <span>Profil</span>
+          </button>
+        </nav>
       </div>
+
+      <style jsx>{`
+        .projects-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 25px;
+          margin-top: 20px;
+        }
+
+        .project-card {
+          background: white;
+          border-radius: 15px;
+          padding: 25px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+          cursor: pointer;
+        }
+
+        .project-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 12px 30px rgba(255, 165, 0, 0.15);
+          border-color: #ffa500;
+        }
+
+        .project-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 15px;
+        }
+
+        .project-header h3 {
+          color: #1F386E;
+          font-size: 1.1rem;
+          margin: 0;
+        }
+
+        .project-status {
+          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          color: white;
+          padding: 5px 12px;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .project-status.pending {
+          background: #ffd700;
+          color: #333;
+        }
+
+        .project-description {
+          color: #666;
+          font-size: 0.9rem;
+          margin: 10px 0 15px 0;
+        }
+
+        .progress-bar {
+          background: #e0e0e0;
+          height: 8px;
+          border-radius: 10px;
+          overflow: hidden;
+          margin-bottom: 10px;
+        }
+
+        .progress-fill {
+          background: linear-gradient(90deg, #ffa500 0%, #ff8c00 100%);
+          height: 100%;
+          transition: width 0.3s ease;
+        }
+
+        .progress-text {
+          font-size: 0.85rem;
+          color: #888;
+          margin: 0;
+        }
+
+        .btn-new-project {
+          grid-column: 1 / -1;
+          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          color: white;
+          border: none;
+          padding: 20px;
+          border-radius: 15px;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+        }
+
+        .btn-new-project:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 25px rgba(255, 165, 0, 0.3);
+        }
+
+        .inside-container {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: 25px;
+        }
+
+        .inside-card {
+          background: white;
+          border-radius: 15px;
+          padding: 25px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+          border-bottom: 2px solid #ffa500;
+          padding-bottom: 15px;
+          margin-bottom: 20px;
+        }
+
+        .card-header h3 {
+          color: #1F386E;
+          margin: 0;
+        }
+
+        .question-list {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .question-item {
+          padding: 15px;
+          background: #f5f7fa;
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .question-item:hover {
+          background: linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+        }
+
+        .question-item p {
+          margin: 5px 0;
+          color: #333;
+        }
+
+        .question-meta {
+          font-size: 0.85rem;
+          color: #888 !important;
+        }
+
+        .btn-inside {
+          width: 100%;
+          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          color: white;
+          border: none;
+          padding: 15px;
+          border-radius: 10px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.3s ease;
+        }
+
+        .btn-inside:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+        }
+
+        .documents-container {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+        }
+
+        .doc-card {
+          background: white;
+          border-radius: 12px;
+          padding: 20px;
+          text-align: center;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          border: 2px solid #e0e0e0;
+        }
+
+        .doc-card:hover {
+          border-color: #ffa500;
+          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.15);
+          transform: translateY(-5px);
+        }
+
+        .doc-card.empty {
+          opacity: 0.6;
+        }
+
+        .doc-header {
+          margin-bottom: 15px;
+        }
+
+        .doc-header i {
+          font-size: 2.5rem;
+          color: #ffa500;
+          margin-bottom: 10px;
+        }
+
+        .doc-header h3 {
+          color: #1F386E;
+          margin: 10px 0 0 0;
+          font-size: 0.95rem;
+        }
+
+        .doc-status {
+          display: inline-block;
+          padding: 5px 10px;
+          border-radius: 20px;
+          font-weight: 600;
+          font-size: 0.85rem;
+        }
+
+        .doc-status.valid {
+          background: #d4edda;
+          color: #155724;
+        }
+
+        .doc-status.pending {
+          background: #fff3cd;
+          color: #856404;
+        }
+
+        .doc-status.missing {
+          background: #f8d7da;
+          color: #721c24;
+        }
+
+        .btn-upload {
+          grid-column: 1 / -1;
+          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          color: white;
+          border: none;
+          padding: 15px;
+          border-radius: 12px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.3s ease;
+        }
+
+        .btn-upload:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+        }
+
+        .messaging-container {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .message-card {
+          background: white;
+          border-radius: 12px;
+          padding: 20px;
+          border-left: 4px solid #ffa500;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+
+        .message-card:hover {
+          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.15);
+          transform: translateX(5px);
+        }
+
+        .message-header h3 {
+          color: #1F386E;
+          margin: 0 0 10px 0;
+        }
+
+        .message-preview {
+          color: #666;
+          margin: 10px 0;
+          font-size: 0.95rem;
+        }
+
+        .message-time {
+          font-size: 0.85rem;
+          color: #999;
+          margin: 0;
+        }
+
+        .btn-message {
+          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          color: white;
+          border: none;
+          padding: 15px;
+          border-radius: 12px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.3s ease;
+        }
+
+        .btn-message:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+        }
+
+        .profile-container {
+          max-width: 600px;
+        }
+
+        .profile-card {
+          background: white;
+          border-radius: 15px;
+          padding: 30px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-header {
+          display: flex;
+          gap: 30px;
+          margin-bottom: 30px;
+          padding-bottom: 30px;
+          border-bottom: 2px solid #ffa500;
+          align-items: center;
+        }
+
+        .profile-header i {
+          color: #ffa500;
+        }
+
+        .profile-info h2 {
+          color: #1F386E;
+          margin: 0 0 5px 0;
+        }
+
+        .profile-info p {
+          color: #888;
+          margin: 0;
+        }
+
+        .profile-section {
+          margin-bottom: 25px;
+          padding-bottom: 25px;
+          border-bottom: 1px solid #e0e0e0;
+        }
+
+        .profile-section:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+        }
+
+        .profile-section h4 {
+          color: #1F386E;
+          margin: 0 0 15px 0;
+        }
+
+        .btn-edit,
+        .btn-logout {
+          background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+          color: white;
+          border: none;
+          padding: 12px 20px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .btn-edit:hover,
+        .btn-logout:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(255, 165, 0, 0.3);
+        }
+
+        .btn-logout {
+          background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .btn-logout:hover {
+          box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+        }
+      `}</style>
     </>
   );
 }
