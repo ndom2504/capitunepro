@@ -282,18 +282,11 @@ export default function Home() {
     } catch (error) {
       console.error('Error creating account:', error);
       if (error.code === 'auth/email-already-in-use') {
-        // Auto-login si le compte existe déjà
-        try {
-          const loginResult = await auth.signInWithEmailAndPassword(email, password);
-          await handleSuccessfulAuth(loginResult.user);
-        } catch (loginError) {
-          console.error('Error auto-login:', loginError);
-          if (loginError.code === 'auth/wrong-password') {
-            setError('Mot de passe incorrect.');
-          } else {
-            setError('Erreur de connexion: ' + loginError.message);
-          }
-        }
+        setError('Cet email existe déjà. Veuillez vous connecter avec votre mot de passe ou utiliser Google/Microsoft.');
+      } else if (error.code === 'auth/weak-password') {
+        setError('Le mot de passe doit contenir au moins 6 caractères.');
+      } else if (error.code === 'auth/invalid-email') {
+        setError('Veuillez entrer une adresse email valide.');
       } else {
         setError('Erreur de création de compte: ' + error.message);
       }
