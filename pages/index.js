@@ -48,7 +48,12 @@ export default function Home() {
   // Show auth section
   const showAuthSection = () => {
     setShowAuth(true);
-    window.scrollTo({ top: 600, behavior: 'smooth' });
+    setTimeout(() => {
+      const authSection = document.getElementById('auth-section');
+      if (authSection) {
+        authSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   // Select role
@@ -201,12 +206,21 @@ export default function Home() {
             </div>
             <div className="col-lg-4 col-md-6 mb-4">
               <div className="service-card">
-                <i className="fas fa-users service-icon"></i>
-                <h3>Communauté (Inside)</h3>
-                <p>Partage d’expériences entre utilisateurs<br/>
-                Questions / réponses<br/>
-                Accès à des conseils pratiques<br/>
-                Interaction avec des professionnels</p>
+                <i className="fas fa-robot service-icon"></i>
+                <h3>Assistant intelligent (IA)</h3>
+                <p>Orientation sur les options possibles<br/>
+                Réponses rapides à vos questions<br/>
+                Aide à la compréhension des démarches<br/>
+                Recommandations personnalisées (selon profil)</p>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6 mb-4">
+              <div className="service-card">
+                <i className="fas fa-route service-icon"></i>
+                <h3>Parcours guidé (mode autonome)</h3>
+                <p>Orientation sans professionnel<br/>
+                Suggestions adaptées à votre profil<br/>
+                Aide à la structuration du projet</p>
               </div>
             </div>
           </div>
