@@ -1,29 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "echo 'No build required'",
-  "outputDirectory": ".",
-  "routes": [
-    {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/dashboard-client",
-      "dest": "/dashboard-client.html"
-    },
-    {
-      "src": "/dashboard-pro",
-      "dest": "/dashboard-pro.html"
-    },
-    {
-      "src": "/templatemo_468_onetel/(.*)",
-      "dest": "/templatemo_468_onetel/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "framework": "nextjs",
   "env": {
     "FIREBASE_API_KEY": "AIzaSyDtZBLZ75lmo0d5q36CRYOxrKmH0QvIifQ",
     "FIREBASE_AUTH_DOMAIN": "capitunepro.firebaseapp.com",
