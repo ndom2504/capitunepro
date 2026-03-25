@@ -50,6 +50,11 @@ export default function DashboardClient() {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        // Charger la photo depuis localStorage
+        const savedPhoto = localStorage.getItem('userProfilePhoto');
+        if (savedPhoto) {
+          setProfilePhoto(savedPhoto);
+        }
       } else {
         router.push('/');
       }
@@ -63,7 +68,12 @@ export default function DashboardClient() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        setProfilePhoto(event.target.result);
+        const photoData = event.target.result;
+        setProfilePhoto(photoData);
+        // Sauvegarder dans localStorage pour persister
+        localStorage.setItem('userProfilePhoto', photoData);
+        // Mettre à jour l'avatar dans toute l'app
+        localStorage.setItem('userAvatar', 'photo');
       };
       reader.readAsDataURL(file);
     }

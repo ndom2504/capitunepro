@@ -104,6 +104,8 @@ export default function Inside() {
   const [newPostCategory, setNewPostCategory] = useState('#Tous');
   const [newPostFiles, setNewPostFiles] = useState([]);
   const [userAvatar, setUserAvatar] = useState('👤');
+  const [comments, setComments] = useState({});
+  const [showComments, setShowComments] = useState({});
   const router = useRouter();
 
   const getUserInitials = (name) => {
@@ -117,11 +119,30 @@ export default function Inside() {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        setUserAvatar(currentUser.photoURL || getUserInitials(currentUser.displayName || currentUser.email));
+        // Charger l'avatar depuis localStorage ou générer des initiales
+        const savedAvatarType = localStorage.getItem('userAvatar');
+        if (savedAvatarType === 'photo') {
+          const savedPhoto = localStorage.getItem('userProfilePhoto');
+          setUserAvatar(savedPhoto || getUserInitials(currentUser.displayName || currentUser.email));
+        } else {
+          setUserAvatar(getUserInitials(currentUser.displayName || currentUser.email));
+        }
       } else {
         router.push('/');
       }
     });
+
+    // Charger les posts depuis localStorage
+    const savedPosts = localStorage.getItem('insidePosts');
+    if (savedPosts) {
+      setPosts(JSON.parse(savedPosts));
+    }
+
+    // Charger les commentaires depuis localStorage
+    const savedComments = localStorage.getItem('insideComments');
+    if (savedComments) {
+      setComments(JSON.parse(savedComments));
+    }
 
     return () => unsubscribe();
   }, []);
@@ -158,6 +179,43 @@ export default function Inside() {
     }
   };
 
+  const handleComment = (postId) => {
+    setShowComments(prev => ({
+      ...prev,
+      [postId]: !prev[postId]
+    }));
+  };
+
+  const handleAddComment = (postId, commentText) => {
+    if (!commentText.trim()) return;
+
+    const newComment = {
+      id: Date.now(),
+      author: user.displayName || 'Moi',
+      avatar: userAvatar,
+      content: commentText,
+      date: 'à l’instant'
+    };
+
+    const updatedComments = {
+      ...comments,
+      [postId]: [...(comments[postId] || []), newComment]
+    };
+
+    setComments(updatedComments);
+    localStorage.setItem('insideComments', JSON.stringify(updatedComments));
+
+    // Mettre à jour le compteur de commentaires
+    const updatedPosts = posts.map(post => {
+      if (post.id === postId) {
+        return { ...post, comments: (updatedComments[postId] || []).length };
+      }
+      return post;
+    });
+    setPosts(updatedPosts);
+    localStorage.setItem('insidePosts', JSON.stringify(updatedPosts));
+  };
+
   const handleFileChange = (e) => {
     const selected = Array.from(e.target.files);
     if (selected.length > 0) {
@@ -192,7 +250,9 @@ export default function Inside() {
       liked: false
     };
 
-    setPosts(prevPosts => [newPost, ...prevPosts]);
+    const updatedPosts = [newPost, ...posts];
+    setPosts(updatedPosts);
+    localStorage.setItem('insidePosts', JSON.stringify(updatedPosts));
     setNewPostContent('');
     setNewPostCategory('#Tous');
     setNewPostFiles([]);
@@ -418,7 +478,7 @@ export default function Inside() {
                             <button className={`${styles.actionBtn} ${post.liked ? styles.liked : ''}`} onClick={() => handleLike(post.id)}>
                               <i className={`fas fa-heart${post.liked ? '' : '-o'}`}></i> J'aime
                             </button>
-                            <button className={styles.actionBtn}>
+                            <button className={styles.actionBtn} onClick={() => handleComment(post.id)}>
                               <i className="fas fa-comment"></i> Commenter
                             </button>
                             <button className={styles.actionBtn} onClick={() => handleShare(post)}>
@@ -428,6 +488,40 @@ export default function Inside() {
                               <i className={`fas fa-bookmark${post.saved ? '' : '-o'}`}></i> Enregistrer
                             </button>
                           </div>
+
+                          {/* Section Commentaires */}
+                          {showComments[post.id] && (
+                            <div className={styles.commentsSection}>
+                              <div className={styles.commentsList}>
+                                {(comments[post.id] || []).map(comment => (
+                                  <div key={comment.id} className={styles.comment}>
+                                    <div className={styles.commentAvatar}>{comment.avatar}</div>
+                                    <div className={styles.commentContent}>
+                                      <div className={styles.commentHeader}>
+                                        <span className={styles.commentAuthor}>{comment.author}</span>
+                                        <span className={styles.commentDate}>{comment.date}</span>
+                                      </div>
+                                      <p className={styles.commentText}>{comment.content}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className={styles.addComment}>
+                                <div className={styles.commentAvatar}>{userAvatar}</div>
+                                <input
+                                  type="text"
+                                  placeholder="Écrire un commentaire..."
+                                  className={styles.commentInput}
+                                  onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                      handleAddComment(post.id, e.target.value);
+                                      e.target.value = '';
+                                    }
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
                         </article>
                       ))
                     ) : (
