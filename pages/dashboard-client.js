@@ -49,15 +49,6 @@ export default function DashboardClient() {
     return () => unsubscribe();
   }, []);
 
-  // Redirection vers "/inside" quand activeTab === 'inside'
-  useEffect(() => {
-    if (activeTab === 'inside') {
-      setTimeout(() => {
-        router.push('/inside');
-      }, 300);
-    }
-  }, [activeTab, router]);
-
   const handleLogout = async () => {
     try {
       await auth.signOut();
@@ -146,11 +137,34 @@ export default function DashboardClient() {
             )}
 
             {activeTab === 'inside' && (
-              <div className="dashboard-section redirect-message">
-                <div className="redirect-content">
-                  <i className="fas fa-arrow-right"></i>
-                  <h2>Accès à Inside</h2>
-                  <p>Vous allez être redirigé vers la page Inside complète...</p>
+              <div className="dashboard-section">
+                <div className="section-title">
+                  <i className="fas fa-users"></i>
+                  Communauté (Inside)
+                </div>
+                <div className="inside-container">
+                  <div className="inside-card">
+                    <div className="card-header">
+                      <h3>Questions Populaires</h3>
+                    </div>
+                    <div className="question-list">
+                      <div className="question-item">
+                        <p><strong>Comment obtenir un permis d'études?</strong></p>
+                        <p className="question-meta">15 réponses • 234 vues</p>
+                      </div>
+                      <div className="question-item">
+                        <p><strong>Délai de traitement pour la résidence permanente</strong></p>
+                        <p className="question-meta">8 réponses • 156 vues</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="inside-card">
+                    <div className="card-header">
+                      <h3>Membres Actifs</h3>
+                    </div>
+                    <button className="btn-inside">Voir la communauté</button>
+                  </div>
                 </div>
               </div>
             )}

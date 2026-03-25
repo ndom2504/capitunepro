@@ -70,15 +70,6 @@ export default function DashboardPro() {
     return () => unsubscribe();
   }, []);
 
-  // Redirection vers "/inside" quand activeTab === 'inside'
-  useEffect(() => {
-    if (activeTab === 'inside') {
-      setTimeout(() => {
-        router.push('/inside');
-      }, 300);
-    }
-  }, [activeTab, router]);
-
   const handleLogout = async () => {
     try {
       await auth.signOut();
@@ -167,11 +158,34 @@ export default function DashboardPro() {
             )}
 
             {activeTab === 'inside' && (
-              <div className="dashboard-section redirect-message">
-                <div className="redirect-content">
-                  <i className="fas fa-arrow-right"></i>
-                  <h2>Accès à Inside</h2>
-                  <p>Vous allez être redirigé vers la page Inside complète...</p>
+              <div className="dashboard-section">
+                <div className="section-title">
+                  <i className="fas fa-network-wired"></i>
+                  Réseau Professionnel
+                </div>
+                <div className="network-container">
+                  <div className="network-card">
+                    <div className="card-header">
+                      <h3>Professionnels Connectés</h3>
+                    </div>
+                    <div className="stats-grid">
+                      <div className="stat-item">
+                        <div className="stat-number">24</div>
+                        <p>Professionnels actifs</p>
+                      </div>
+                      <div className="stat-item">
+                        <div className="stat-number">156</div>
+                        <p>Projets en commun</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="network-card">
+                    <div className="card-header">
+                      <h3>Forums et Discussions</h3>
+                    </div>
+                    <button className="btn-network">Participer aux discussions</button>
+                  </div>
                 </div>
               </div>
             )}
