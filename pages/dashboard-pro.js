@@ -34,6 +34,16 @@ export default function DashboardPro() {
   const [activeTab, setActiveTab] = useState('projets');
   const [user, setUser] = useState(null);
   const [showInsideOptions, setShowInsideOptions] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    company: '',
+    specialization: ''
+  });
+  const [successMessage, setSuccessMessage] = useState('');
   const [clients, setClients] = useState([
     {
       id: '1',
@@ -69,6 +79,36 @@ export default function DashboardPro() {
 
     return () => unsubscribe();
   }, []);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfilePhoto(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSaveSettings = async () => {
+    try {
+      // En production : sauvegarder dans Firestore
+      // await db.collection('users').doc(user.uid).update({...formData, profilePhoto});
+      setSuccessMessage('Profil mis à jour avec succès!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -184,7 +224,7 @@ export default function DashboardPro() {
                     <div className="card-header">
                       <h3>Forums et Discussions</h3>
                     </div>
-                    <button className="btn-network">Participer aux discussions</button>
+                    <button className="btn-network" onClick={() => router.push('/inside')}>Participer aux discussions</button>
                   </div>
                 </div>
               </div>
@@ -273,36 +313,149 @@ export default function DashboardPro() {
                   <i className="fas fa-user-check"></i>
                   Mon Profil Professionnel
                 </div>
-                <div className="profile-pro-container">
-                  <div className="profile-pro-card">
-                    <div className="profile-pro-header">
-                      <i className="fas fa-user-circle fa-5x"></i>
-                      <div className="profile-pro-info">
-                        <h2>{user.email}</h2>
-                        <p>Professionnel Agréé</p>
+                <div className="profile-container">
+                  <div className="profile-card">
+                    <div className="account-type-badge pro">
+                      <i className="fas fa-briefcase"></i>
+                      Compte Professionnel
+                    </div>
+
+                    {successMessage && (
+                      <div style={{
+                        padding: '12px 16px',
+                        background: '#4caf50',
+                        color: 'white',
+                        borderRadius: '8px',
+                        marginBottom: '20px',
+                        fontSize: '14px'
+                      }}>
+                        ✓ {successMessage}
+                      </div>
+                    )}
+
+                    <div className="profile-section">
+                      <h4><i className="fas fa-image"></i>Photo de Profil</h4>
+                      <div className="photo-upload-container">
+                        <div className="photo-preview">
+                          {profilePhoto ? (
+                            <img src={profilePhoto} alt="Profil" />
+                          ) : (
+                            <div className="photo-preview-empty">
+                              <i className="fas fa-user-circle"></i>
+                            </div>
+                          )}
+                        </div>
+                        <label className="file-input-wrapper">
+                          <button type="button" className="btn-upload-photo">
+                            <i className="fas fa-upload"></i>
+                            Télécharger une photo
+                          </button>
+                          <input type="file" accept="image/*" onChange={handlePhotoUpload} />
+                        </label>
                       </div>
                     </div>
 
-                    <div className="profile-pro-section">
-                      <h4>Informations Professionnelles</h4>
-                      <div className="info-grid">
-                        <p><strong>Clients accompagnés:</strong> 5</p>
-                        <p><strong>Taux de satisfaction:</strong> 4.8/5</p>
+                    <div className="profile-section">
+                      <h4><i className="fas fa-user-edit"></i>Informations Professionnelles</h4>
+                      <div className="settings-form">
+                        <div className="form-row">
+                          <div className="form-input-group">
+                            <label>Prénom</label>
+                            <input 
+                              type="text" 
+                              name="firstName"
+                              value={formData.firstName}
+                              onChange={handleFormChange}
+                              placeholder="Ex: Marie"
+                            />
+                          </div>
+                          <div className="form-input-group">
+                            <label>Nom</label>
+                            <input 
+                              type="text" 
+                              name="lastName"
+                              value={formData.lastName}
+                              onChange={handleFormChange}
+                              placeholder="Ex: Bernard"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-row full">
+                          <div className="form-input-group">
+                            <label>Email</label>
+                            <input 
+                              type="email" 
+                              name="email"
+                              value={formData.email || user.email}
+                              onChange={handleFormChange}
+                              disabled
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-row">
+                          <div className="form-input-group">
+                            <label>Téléphone</label>
+                            <input 
+                              type="tel" 
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleFormChange}
+                              placeholder="Ex: +1 (613) 555-0100"
+                            />
+                          </div>
+                          <div className="form-input-group">
+                            <label>Entreprise</label>
+                            <input 
+                              type="text" 
+                              name="company"
+                              value={formData.company}
+                              onChange={handleFormChange}
+                              placeholder="Ex: Immigration Solutions Inc"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-row full">
+                          <div className="form-input-group">
+                            <label>Spécialisation</label>
+                            <input 
+                              type="text" 
+                              name="specialization"
+                              value={formData.specialization}
+                              onChange={handleFormChange}
+                              placeholder="Ex: Permis d'études, Résidence permanente"
+                            />
+                          </div>
+                        </div>
+
+                        <button className="btn-save-settings" onClick={handleSaveSettings}>
+                          <i className="fas fa-check"></i> Enregistrer les modifications
+                        </button>
                       </div>
-                      <button className="btn-edit-pro">
-                        <i className="fas fa-edit"></i> Modifier mon profil
-                      </button>
                     </div>
 
-                    <div className="profile-pro-section">
-                      <h4>Certifications</h4>
-                      <button className="btn-edit-pro">
+                    <div className="profile-section">
+                      <h4><i className="fas fa-certificate"></i>Certifications</h4>
+                      <div style={{marginBottom: '15px', fontSize: '14px', color: '#666'}}>
+                        Clients accompagnés: <strong>5</strong> | 
+                        <span style={{marginLeft: '10px'}}>Taux de satisfaction: <strong>4.8/5</strong></span>
+                      </div>
+                      <button className="btn-edit">
                         <i className="fas fa-certificate"></i> Gérer mes certifications
                       </button>
                     </div>
 
-                    <div className="profile-pro-section">
-                      <h4>Compte</h4>
+                    <div className="profile-section">
+                      <h4><i className="fas fa-lock"></i>Paramètres de Sécurité</h4>
+                      <button className="btn-edit">
+                        <i className="fas fa-lock"></i> Changer mot de passe
+                      </button>
+                    </div>
+
+                    <div className="profile-section">
+                      <h4><i className="fas fa-sign-out-alt"></i>Compte</h4>
                       <button className="btn-logout-pro" onClick={handleLogout}>
                         <i className="fas fa-sign-out-alt"></i> Déconnexion
                       </button>
