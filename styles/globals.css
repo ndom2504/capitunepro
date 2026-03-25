@@ -319,7 +319,7 @@ body {
 /* Floating Chat Bubble */
 .floating-chat-btn {
   position: fixed;
-  bottom: 160px;
+  bottom: 210px;
   right: 30px;
   width: 60px;
   height: 60px;

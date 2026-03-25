@@ -100,12 +100,24 @@ export default function Inside() {
   const [searchTerm, setSearchTerm] = useState('');
   const [posts, setPosts] = useState(MOCK_POSTS);
   const [selectedStory, setSelectedStory] = useState(null);
+  const [newPostContent, setNewPostContent] = useState('');
+  const [newPostCategory, setNewPostCategory] = useState('#Tous');
+  const [newPostFiles, setNewPostFiles] = useState([]);
+  const [userAvatar, setUserAvatar] = useState('👤');
   const router = useRouter();
+
+  const getUserInitials = (name) => {
+    if (!name) return 'ME';
+    const parts = name.split(' ');
+    if (parts.length === 1) return parts[0].substr(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+        setUserAvatar(currentUser.photoURL || getUserInitials(currentUser.displayName || currentUser.email));
       } else {
         router.push('/');
       }
@@ -144,6 +156,46 @@ export default function Inside() {
         url: window.location.href
       });
     }
+  };
+
+  const handleFileChange = (e) => {
+    const selected = Array.from(e.target.files);
+    if (selected.length > 0) {
+      const newFiles = selected.map(file => ({
+        id: `${file.name}-${file.size}-${Date.now()}`,
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        url: URL.createObjectURL(file)
+      }));
+      setNewPostFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleCreatePost = () => {
+    if (!newPostContent.trim()) return;
+
+    const newPost = {
+      id: Date.now(),
+      author: user.displayName || 'Moi',
+      avatar: userAvatar,
+      title: user.displayName ? `${user.displayName} · Membre` : 'Membre',
+      verified: false,
+      date: 'à l’instant',
+      content: newPostContent,
+      image: newPostFiles.find(f => f.type.startsWith('image/'))?.url || null,
+      category: newPostCategory === '#Tous' ? '#ConseilsExpert' : newPostCategory,
+      likes: 0,
+      comments: 0,
+      shares: 0,
+      saved: false,
+      liked: false
+    };
+
+    setPosts(prevPosts => [newPost, ...prevPosts]);
+    setNewPostContent('');
+    setNewPostCategory('#Tous');
+    setNewPostFiles([]);
   };
 
   const filteredPosts = posts.filter(post => {
@@ -260,10 +312,60 @@ export default function Inside() {
 
                 {/* Colonne Centrale - Feed */}
                 <main className={styles.feed}>
+                  {/* Création de publication */}
+                  <div className={styles.createPostCard}>
+                    <div className={styles.createPostHeader}>
+                      <div className={styles.createPostAvatar}>{userAvatar}</div>
+                      <textarea
+                        className={styles.createPostTextarea}
+                        value={newPostContent}
+                        onChange={(e) => setNewPostContent(e.target.value)}
+                        placeholder="Partager une actualité, un conseil ou une question..."
+                      />
+                    </div>
+
+                    <div className={styles.fileUploadGroup}>
+                      <label className={styles.fileUploadLabel}>
+                        <i className="fas fa-image"></i> Image
+                        <input type="file" accept="image/*" multiple hidden onChange={handleFileChange} />
+                      </label>
+                      <label className={styles.fileUploadLabel}>
+                        <i className="fas fa-video"></i> Vidéo
+                        <input type="file" accept="video/*" multiple hidden onChange={handleFileChange} />
+                      </label>
+                      <label className={styles.fileUploadLabel}>
+                        <i className="fas fa-file"></i> Document
+                        <input type="file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple hidden onChange={handleFileChange} />
+                      </label>
+                      <select value={newPostCategory} onChange={(e) => setNewPostCategory(e.target.value)}>
+                        {CATEGORIES.filter(cat => cat !== '#Tous').map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                      <button className={styles.eventBtn} onClick={handleCreatePost}>Publier</button>
+                    </div>
+
+                    {newPostFiles.length > 0 && (
+                      <div className={styles.filePreviewContainer}>
+                        {newPostFiles.map(file => (
+                          <div key={file.id} className={styles.filePreview}>
+                            {file.type.startsWith('image/') && <img src={file.url} alt={file.name} />}
+                            <span>{file.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   {/* Stories */}
                   <div className={styles.storiesContainer}>
                     <h3 className={styles.storiesTitle}>Histoires Professionnelles</h3>
                     <div className={styles.storiesList}>
+                      <button className={`${styles.storyBubble} ${styles.storyCreate}`} onClick={() => alert('Créer une story')}>
+                        <div className={styles.storyAvatar}>+</div>
+                        <p className={styles.storyName}>Créer une story</p>
+                      </button>
+
                       {MOCK_STORIES.map(story => (
                         <button
                           key={story.id}
